@@ -1,0 +1,17 @@
+Package: onsoilsurvey
+Title: Making PDSM in Ontario Better
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Daniel",
+           family = "Saurette",
+           role = c("aut", "cre"),
+           email = "first.last@example.com",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: This package is simply a collection of functions commonly used in PDSM. I can no longer justify copy and paste of
+    functions from one script to another.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.1
+Suggests: 
+    testthat (>= 2.1.0)
