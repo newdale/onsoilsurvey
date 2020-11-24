@@ -15,6 +15,6 @@ LazyData: true
 RoxygenNote: 7.1.1
 Suggests: 
     testthat (>= 2.1.0)
-Imports: sp, raster
+Imports: sp, raster, stats
 Depends: 
     R (>= 2.10)
