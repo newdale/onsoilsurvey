@@ -11,6 +11,7 @@
 #'
 #' @examples
 #' #Calculate Euclidean distance fields from a DEM raster
+#' library(raster)
 #' data(keene)
 #' oss.edf(keene)
 #'

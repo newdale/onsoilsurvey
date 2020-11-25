@@ -18,7 +18,8 @@
 #' @source Ontario GeoHub, <https://geohub.lio.gov.on.ca/datasets/b1ec60624b2f4f67bb9c4fb536e6b2fd>
 #'
 #' @examples
+#' library(raster)
 #' data(keene)
-#' raster::plot(Keene_DEM)
-#' pr <- raster::crs(Keene_DEM)
+#' plot(Keene_DEM)
+#' pr <- crs(Keene_DEM)
 
