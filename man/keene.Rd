@@ -63,13 +63,15 @@ Formal class 'RasterLayer' [package "raster"] with 12 slots
   ..@ z       : list()
 }
 \details{
-%%  ~~ If necessary, more details than the __description__ above ~~
+Ontario Ministry of Natural Resources and Forestry. 2002. GTA DEM 2002.
+#' (https://geohub.lio.gov.on.ca/datasets/b1ec60624b2f4f67bb9c4fb536e6b2fd)
 }
 \source{
-%%  ~~ reference to a publication or URL from which the data were obtained ~~
+Derived from Ontario GeoHub GTA DEM 2002 data class.
 }
 \references{
-%%  ~~ possibly secondary sources and usages ~~
+Ontario Ministry of Natural Resources and Forestry. 2002. GTA DEM 2002.
+#' (https://geohub.lio.gov.on.ca/datasets/b1ec60624b2f4f67bb9c4fb536e6b2fd)
 }
 \examples{
 data(keene)

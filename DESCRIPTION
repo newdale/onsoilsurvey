@@ -5,7 +5,7 @@ Authors@R:
     person(given = "Daniel",
            family = "Saurette",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
+           email = "daniel.saurette@ontario.ca",
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: This package is simply a collection of functions commonly used in PDSM. I can no longer justify copy and paste of
     functions from one script to another.
@@ -15,6 +15,5 @@ LazyData: true
 RoxygenNote: 7.1.1
 Suggests: 
     testthat (>= 2.1.0)
-Imports: sp, raster, stats
-Depends: 
-    R (>= 2.10)
+Imports: sp, raster, stats, caret, dplyr, methods
+Depends: R (>= 2.10)

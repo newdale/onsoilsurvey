@@ -19,6 +19,6 @@
 #'
 #' @examples
 #' data(keene)
-#' plot(Keene_DEM)
-#' pr <- crs(Keene_DEM)
+#' raster::plot(Keene_DEM)
+#' pr <- raster::crs(Keene_DEM)
 
