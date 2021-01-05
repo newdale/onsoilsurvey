@@ -1,7 +1,9 @@
 \name{keene}
 \alias{keene}
 \docType{data}
-\title{Keene Study Area Digital Elevation Model, Ontario, Canada}
+\title{
+Keene Study Area Digital Elevation Model, Ontario, Canada
+}
 \description{
 Digital elevation model (DEM) for the Keene study area,
 Peterborough County, Ontario. Data in raster format.
@@ -12,7 +14,7 @@ DEM derived at 20m resolution.
   The format is:
 Formal class 'RasterLayer' [package "raster"] with 12 slots
   ..@ file    :Formal class '.RasterFile' [package "raster"] with 13 slots
-  .. .. ..@ name        : chr "C:\\Users\\atiko\\Desktop\\Keene\\covariates\\DEM.tif"
+  .. .. ..@ name        : chr ""
   .. .. ..@ datanotation: chr "FLT4S"
   .. .. ..@ byteorder   : chr "little"
   .. .. ..@ nodatavalue : num -Inf
@@ -23,19 +25,19 @@ Formal class 'RasterLayer' [package "raster"] with 12 slots
   .. .. ..@ toptobottom : logi TRUE
   .. .. ..@ blockrows   : int 128
   .. .. ..@ blockcols   : int 128
-  .. .. ..@ driver      : chr "gdal"
+  .. .. ..@ driver      : chr ""
   .. .. ..@ open        : logi FALSE
   ..@ data    :Formal class '.SingleLayerData' [package "raster"] with 13 slots
-  .. .. ..@ values    : logi(0)
+  .. .. ..@ values    : num [1:521420] NA NA NA NA NA NA NA NA NA NA ...
   .. .. ..@ offset    : num 0
   .. .. ..@ gain      : num 1
-  .. .. ..@ inmemory  : logi FALSE
-  .. .. ..@ fromdisk  : logi TRUE
+  .. .. ..@ inmemory  : logi TRUE
+  .. .. ..@ fromdisk  : logi FALSE
   .. .. ..@ isfactor  : logi FALSE
   .. .. ..@ attributes: list()
   .. .. ..@ haveminmax: logi TRUE
-  .. .. ..@ min       : num 187
-  .. .. ..@ max       : num 274
+  .. .. ..@ min       : num 188
+  .. .. ..@ max       : num 275
   .. .. ..@ band      : int 1
   .. .. ..@ unit      : chr ""
   .. .. ..@ names     : chr "DEM"

@@ -2,11 +2,9 @@
 #'
 #' Calculate Euclidean distance fields for an input raster.
 #' Calculate distance from each raster cell to NW, NE, SW,
-#' SE, Y max, X max and middle of the raster. Outputs the seven rasters directly to
-#' the working directory and to a RasterStack in the Environment.
+#' SE, Y max, X max and middle of the raster. Outputs to a rasterstack.
 #'
 #' @param x Raster* object
-#' @param out Path for output directory. Defaults to getwd().
 #'
 #' @return RasterStack* object
 #' @export
@@ -18,11 +16,9 @@
 #' oss.edf(keene)
 #'
 #'
-oss.edf<- function(x,out=getwd()){
+oss.edf<- function(x){
 
-  out<-out
-
-  # first we set up window and plot d
+  # first we set up window and plot source raster
   graphics::par(mfrow=c(2,4), mar=c(0.2,0.2,1.5,0.2), oma=c(0.2,0.2,2,2))
   raster::plot(x, main = "Source", legend=FALSE, axes=FALSE)
 
@@ -41,7 +37,6 @@ oss.edf<- function(x,out=getwd()){
   raster::plot(xgrid, main='Dist XMax',legend=FALSE,axes=FALSE)
   raster::projection(xgrid)<- raster::crs(x)
   xgrid<- raster::mask(x = xgrid, mask = x)
-  #raster::writeRaster(xgrid,paste0(out,'/distx.tif'),overwrite = TRUE)
   print("DISTANCE FROM XMAX COMPLETE")
 
   # calculate the YDIST, which is the Y distance from every raster cell to ymax coordinate
@@ -53,7 +48,6 @@ oss.edf<- function(x,out=getwd()){
   raster::plot(ygrid, main='Dist YMax',legend=FALSE,axes=FALSE)
   raster::projection(ygrid) <- raster::crs(x)
   ygrid<- raster::mask(x = ygrid, mask = x)
-  #raster::writeRaster(ygrid,paste0(out,'/disty.tif'),overwrite = TRUE)
   print("DISTANCE FROM YMAX COMPLETE")
 
   # now we need to generate vectors representing the 4 corners and the center of the raster
@@ -68,7 +62,6 @@ oss.edf<- function(x,out=getwd()){
   NW<- raster::mask(x = NW, mask = x)
   raster::projection(NW) <- raster::crs(x)
   raster::plot(NW, main='Dist NW',legend=FALSE,axes=FALSE)
-  #raster::writeRaster(NW,paste0(out,"/distnw.tif"),overwrite = TRUE)
   print('DISTANCE FROM NW COMPLETE')
 
   # generate distance to SW corner grid
@@ -76,7 +69,6 @@ oss.edf<- function(x,out=getwd()){
   SW<- raster::mask(x = SW, mask = x)
   raster::projection(SW) <- raster::crs(x)
   raster::plot(SW, main='Dist SW',legend=FALSE,axes=FALSE)
-  #raster::writeRaster(SW,paste0(out,"/distsw.tif"),overwrite = TRUE)
   print('DISTANCE FROM SW COMPLETE')
 
   # generate distance to NE corner grid
@@ -84,7 +76,6 @@ oss.edf<- function(x,out=getwd()){
   NE<- raster::mask(x = NE, mask = x)
   raster::projection(NE) <- raster::crs(x)
   raster::plot(NE, main='Dist from NE',legend=FALSE,axes=FALSE)
-  raster::writeRaster(NE,paste0(out,"/distne.tif"),overwrite = TRUE)
   print('DISTANCE FROM NE COMPLETE')
 
   # generate distance to SE corner grid
@@ -92,7 +83,6 @@ oss.edf<- function(x,out=getwd()){
   SE<- raster::mask(x = SE, mask = x)
   raster::projection(SE) <- raster::crs(x)
   raster::plot(SE, main='Dist SE',legend=FALSE,axes=FALSE)
-  #raster::writeRaster(SE,paste0(out,"/distse.tif"),overwrite = TRUE)
   print('DISTANCE FROM SE COMPLETE')
 
   # generate distance to CENTRE grid
@@ -100,7 +90,6 @@ oss.edf<- function(x,out=getwd()){
   ctr<- raster::mask(x = ctr, mask = x)
   raster::projection(ctr) <- raster::crs(x)
   raster::plot(ctr, main='Dist MID',legend=FALSE,axes=FALSE)
-  #raster::writeRaster(ctr,paste0(out,"/distmid.tif"),overwrite = TRUE)
   print('DISTANCE FROM CENTRE COMPLETE')
 
   edf.stack<- raster::stack(xgrid,ygrid,NW,SW,NE,SE,ctr)

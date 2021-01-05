@@ -4,12 +4,10 @@
 \alias{oss.edf}
 \title{Calculate Euclidean Distance Fields from a raster}
 \usage{
-oss.edf(x, out = getwd())
+oss.edf(x)
 }
 \arguments{
 \item{x}{Raster* object}
-
-\item{out}{Path for output directory. Defaults to getwd().}
 }
 \value{
 RasterStack* object
@@ -17,8 +15,7 @@ RasterStack* object
 \description{
 Calculate Euclidean distance fields for an input raster.
 Calculate distance from each raster cell to NW, NE, SW,
-SE, Y max, X max and middle of the raster. Outputs the seven rasters directly to
-the working directory and to a RasterStack in the Environment.
+SE, Y max, X max and middle of the raster. Outputs to a rasterstack.
 }
 \examples{
 #Calculate Euclidean distance fields from a DEM raster
