@@ -25,7 +25,7 @@ oss.goofCaret<- function(ModelName){
   r<- ModelName
 
   if(r$method=="cubist"){x<- r$pred %>% dplyr::filter(committees==r$bestTune$committees, neighbors==r$bestTune$neighbors)
-  }else if(r$method=="rf"|r$method=="qrf"){x<- r$pred %>% dplyr::filter(mtry==r$bestTune$mtry)
+  }else if(r$method=="rf"|r$method=="qrf"|r$method=="parRF"){x<- r$pred %>% dplyr::filter(mtry==r$bestTune$mtry)
   }else if(r$method=="svmRadial"){x<- r$pred %>% dplyr::filter(sigma==r$bestTune$sigma, C==r$bestTune$C)
   }else if(r$method=="lm"|r$method=="lmStepAIC"){x<- r$pred
   }else if(r$method=="gbm"){x<- r$pred %>% dplyr::filter(n.trees==r$bestTune$n.trees, interaction.depth==r$bestTune$interaction.depth, shrinkage==r$bestTune$shrinkage, n.minobsinnode==r$bestTune$n.minobsinnode)
