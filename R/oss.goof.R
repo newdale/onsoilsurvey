@@ -17,7 +17,7 @@
 #' #Calculate fit statistics between 2 numeric vectors
 #' observed<- c(3,7,4,9,6,2)
 #' predicted<-c(2,5,4,7,3,5)
-#' oss.goof(observed,predicted)
+#' oss.goof(predicted= predicted, observed= observed)
 #'
 #'
 oss.goof <- function(predicted,observed){
