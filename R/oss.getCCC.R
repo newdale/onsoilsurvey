@@ -30,6 +30,7 @@ oss.getCCC <- function(Model){
 
   # we extract the observed and predicted data from the caret outputs
   x <- Model$pred
+  if(is.null(x)) stop ("No predictions are saved to the train object from caret, set \'savePredictions\' argument to \'all\' or \'final\' in the trainControl")
 
   # group the data tuning parameters and calculate the goodness of fit statistics
   df <- x %>%
