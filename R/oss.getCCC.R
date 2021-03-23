@@ -66,10 +66,15 @@ oss.getCCC <- function(Model){
 
   #create the output list object
   out<- list(ccc_optimal_model=df, ccc_best_tune=final_pars, ccc_cv_summary=df_var)
-  invisible(out)
 
   # print list item 3, or CV results to console and print statement showing final tuning parameters
   print(out[[3]])
   cat(paste("Lin's Concordance Coerrelation Coefficient was used to select the optimal model.",
             paste0("The final values for the optimal model were ",paste(c(colnames(final_pars)),as.vector(t(final_pars)),sep=" ", collapse=" and "),"."),sep="\n"))
+
+  invisible(return(out))
+
 }
+
+
+
