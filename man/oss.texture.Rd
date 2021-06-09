@@ -2,9 +2,21 @@
 % Please edit documentation in R/oss.texture.R
 \name{oss.texture}
 \alias{oss.texture}
-\title{Determine Texture Class}
+\title{Use particle size analysis data to determine the texture
+class in the Canadian System of Soil Classification.
+If sand fraction data is provided, modifiers (coarse, fine, very fine)
+will be assigned to the sands, loamy sands and sandy loams.}
 \usage{
-oss.texture(sand, silt, clay)
+oss.texture(
+  sand,
+  silt,
+  clay,
+  vcs = NULL,
+  cs = NULL,
+  ms = NULL,
+  fs = NULL,
+  vfs = NULL
+)
 }
 \arguments{
 \item{sand}{numeric}
@@ -12,19 +24,40 @@ oss.texture(sand, silt, clay)
 \item{silt}{numeric}
 
 \item{clay}{numeric}
+
+\item{vcs}{numeric}
+
+\item{cs}{numeric}
+
+\item{ms}{numeric}
+
+\item{fs}{numeric}
+
+\item{vfs}{numeric}
 }
 \value{
 character
 }
 \description{
-Use sand, silt and clay data to determine the texture
-class in the Canadian System of Soil Classification
+Use particle size analysis data to determine the texture
+class in the Canadian System of Soil Classification.
+If sand fraction data is provided, modifiers (coarse, fine, very fine)
+will be assigned to the sands, loamy sands and sandy loams.
 }
 \examples{
-#Determine texture class for a single observation
-oss.texture(67,10,23)
+#Determine texture class for a single observation without sand fractions
+oss.texture(sand=67, silt=23, clay=10)
 
-#Determine texture class for multiple observations
+#Determine texture class for a single observation with sand fractions
+oss.texture(sand=67, silt=23, clay=10, vcs=60, cs=10, ms=10, fs=10, vfs=10)
+
+#Determine texture class for multiple observations without sand fractions
+dat<- data.frame(sand=c(20,40,80), silt= c(15,30,10), clay= c(65,30,10),
+vcs=c(10,10,10), cs=c(5,5,5), ms=c(5,5,5), fs=c(60,60,60), vfs=c(20,20,20))
+mapply(oss.texture,sand=dat$sand, silt=dat$silt, clay=dat$clay,
+vcs=dat$vcs, cs=dat$cs, ms=dat$ms, fs=dat$fs, vfs=dat$vfs)
+
+#Determine texture class for multiple observations without sand fractions
 dat<- data.frame(sand=c(20,40,80), silt= c(15,30,10), clay= c(65,30,10))
 mapply(oss.texture,sand=dat$sand, silt=dat$silt, clay=dat$clay)
 
