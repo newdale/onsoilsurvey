@@ -61,7 +61,7 @@ oss.texture<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vf
     }
 
     # next we will ensure we normalize to 100, and print an error statement if values deviate too greatly
-    if (psa>=102 | psa<= 98) warning('Sum of sand, silt and clay deviates from 100 by more than 2. Check your input data. Values will be normalized to sum 100')
+    if (psa>=105 | psa<= 95) warning('Sum of sand, silt and clay deviates from 100 by more than 5. Check your input data. Values will be normalized to sum 100')
 
     # and now we will normalize to 100 for the sand, silt and clay
     # create copies for the calculation
@@ -85,13 +85,13 @@ oss.texture<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vf
       # we check to see if sand fractions sum closer to sand content
       # and we check to see if the sum deviates by more than 2 from total sand and issue warning if it does
       if(which.min(abs(c(sand,100)-sfrac))==1){
-        if(sfrac>=(sand+2) | sfrac<= (sand-2)) warning('Sum of sand fractions deviates by more than 2 from total sand. Check your input data. Values will be normalized to sum 100')
+        if(sfrac>=(sand+5) | sfrac<= (sand-5)) warning('Sum of sand fractions deviates by more than 5 from total sand. Check your input data. Values will be normalized to sum 100')
       }
 
       # we check to see if sand fractions sum closer to 100% (reported as percent of total sand)
       # and if closer to 100, we check to see if the sum deviates by more than 2 from 100
       if(which.min(abs(c(sand,100)-sfrac))==2){
-        if(sfrac>=(102) | sfrac<= (98)) warning('Sum of sand fractions deviates by more than 2 from 100. Check your input data. Values will be normalized to sum 100')
+        if(sfrac>=(105) | sfrac<= (95)) warning('Sum of sand fractions deviates by more than 5 from 100. Check your input data. Values will be normalized to sum 100')
       }
 
       # and now we will normalize sand fractions in the case they are a proportion of total sand
