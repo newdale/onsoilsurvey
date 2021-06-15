@@ -54,6 +54,11 @@ If sand fraction data is provided, modifiers (coarse, fine, very fine)
 will be assigned to the sands, loamy sands and sandy loams.
 }
 \examples{
+require(sp)
+require(raster)
+require(rasterVis)
+require(RColorBrewer)
+
 # create sample data which includes all combinations of sand, silt and clay
 dat<- data.frame(expand.grid(sand=seq(0,100,1), silt=seq(0,100,1), clay=seq(0,100,1)))
 dat$sum<- dat$sand+dat$silt+dat$clay
@@ -61,11 +66,11 @@ dat<- dat[dat$sum==100,]
 dat$x<- dat$sand
 dat$y<- dat$clay
 
-sp::coordinates(dat)<- ~x+y
-sp::gridded(dat)<- TRUE
-sand<- raster::raster(dat[1])
-silt<- raster::raster(dat[2])
-clay<- raster::raster(dat[3])
+coordinates(dat)<- ~x+y
+gridded(dat)<- TRUE
+sand<- raster(dat[1])
+silt<- raster(dat[2])
+clay<- raster(dat[3])
 
 # Create sand fraction data for testing
 vcs<- clay/(clay+silt+sand+clay+clay)*100
@@ -78,13 +83,12 @@ vfs<- clay/(clay+silt+sand+clay+clay)*100
 tex<- oss.texture.r(sand,silt,clay)
 
 # And we can visualize using levelplot
-texture.map<- raster::ratify(tex[[1]])
-rat<- data.frame(raster::levels(texture.map))
+texture.map<- ratify(tex[[1]])
+rat<- data.frame(levels(texture.map))
 rat[["Texture"]]<- tex[[2]]$Class[match(rat$ID,tex$legend$Code)]
 levels(texture.map)<- rat
-myTheme<- rasterVis::rasterTheme(region=(grDevices::colorRampPalette(
-                                 RColorBrewer::brewer.pal(12, "Set3"))(13)))
-rasterVis::levelplot(texture.map, par.settings=myTheme)
+myTheme<- rasterTheme(region=(colorRampPalette(brewer.pal(12, "Set3"))(13)))
+levelplot(texture.map, par.settings=myTheme)
 
 # Create a texture class raster with sand fractions
 tex_fractions<- oss.texture.r(sand,silt,clay, vcs, cs, ms, fs, vfs)

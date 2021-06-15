@@ -24,9 +24,27 @@
 #' Each outer list item will represent the list of outputs for each layer of the RasterStack or Rasterbrick.
 #' The inner list will contain the 'texture_raster' and 'legend' objects as described above.
 #'
+#'@importFrom methods "as"
+#'@importFrom raster "nlayers"
+#'@importFrom raster "rasterFromXYZ"
+#'@importFrom raster "raster"
+#'@importFrom raster "ratify"
+#'@importFrom raster "levels"
+#'@importFrom sp "coordinates"
+#'@importFrom sp "gridded"
+#'@importFrom rasterVis "rasterTheme"
+#'@importFrom rasterVis "levelplot"
+#'@importFrom grDevices "colorRampPalette"
+#'@importFrom RColorBrewer "brewer.pal"
+#'
 #' @export
 #'
 #' @examples
+#' require(sp)
+#' require(raster)
+#' require(rasterVis)
+#' require(RColorBrewer)
+#'
 #' # create sample data which includes all combinations of sand, silt and clay
 #' dat<- data.frame(expand.grid(sand=seq(0,100,1), silt=seq(0,100,1), clay=seq(0,100,1)))
 #' dat$sum<- dat$sand+dat$silt+dat$clay
@@ -34,11 +52,11 @@
 #' dat$x<- dat$sand
 #' dat$y<- dat$clay
 #'
-#' sp::coordinates(dat)<- ~x+y
-#' sp::gridded(dat)<- TRUE
-#' sand<- raster::raster(dat[1])
-#' silt<- raster::raster(dat[2])
-#' clay<- raster::raster(dat[3])
+#' coordinates(dat)<- ~x+y
+#' gridded(dat)<- TRUE
+#' sand<- raster(dat[1])
+#' silt<- raster(dat[2])
+#' clay<- raster(dat[3])
 #'
 #' # Create sand fraction data for testing
 #' vcs<- clay/(clay+silt+sand+clay+clay)*100
@@ -51,13 +69,12 @@
 #' tex<- oss.texture.r(sand,silt,clay)
 #'
 #' # And we can visualize using levelplot
-#' texture.map<- raster::ratify(tex[[1]])
-#' rat<- data.frame(raster::levels(texture.map))
+#' texture.map<- ratify(tex[[1]])
+#' rat<- data.frame(levels(texture.map))
 #' rat[["Texture"]]<- tex[[2]]$Class[match(rat$ID,tex$legend$Code)]
 #' levels(texture.map)<- rat
-#' myTheme<- rasterVis::rasterTheme(region=(grDevices::colorRampPalette(
-#'                                  RColorBrewer::brewer.pal(12, "Set3"))(13)))
-#' rasterVis::levelplot(texture.map, par.settings=myTheme)
+#' myTheme<- rasterTheme(region=(colorRampPalette(brewer.pal(12, "Set3"))(13)))
+#' levelplot(texture.map, par.settings=myTheme)
 #'
 #' # Create a texture class raster with sand fractions
 #' tex_fractions<- oss.texture.r(sand,silt,clay, vcs, cs, ms, fs, vfs)
@@ -94,7 +111,7 @@ oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, 
     # since when we convert to SpatialPointsDataFrame it drops all the NA cells
     xy<- sand
     xy[is.na(xy)] <- 0
-    xy<- methods::as(xy,"SpatialPointsDataFrame")
+    xy<- as(xy,"SpatialPointsDataFrame")
     xy<- xy@coords
 
     # here we use mapply to convert to texture class. We use either with or without fractions, based on inputs
@@ -111,7 +128,7 @@ oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, 
     rm(z.legend,z.legendclass)
 
     xyz<- cbind(xy,z)
-    tex<- raster::rasterFromXYZ(xyz)
+    tex<- rasterFromXYZ(xyz)
 
     texout <- list("texture_raster"=tex, "legend"=rat)
 
@@ -122,7 +139,7 @@ oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, 
     #create an empty list outside the loop to store the outputs
     texout<- list()
 
-    for (i in 1:raster::nlayers(sand)){
+    for (i in 1:nlayers(sand)){
 
       #convert the raster layers to vector
       s<- as.vector(round(sand[[i]],0))
@@ -141,7 +158,7 @@ oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, 
       # generate matrix of xy coordinates for the raster layers
       xy<- sand[[i]]
       xy[is.na(xy)] <- 0
-      xy<- methods::as(xy,"SpatialPointsDataFrame")
+      xy<- as(xy,"SpatialPointsDataFrame")
       xy<- xy@coords
 
       # here we use mapply to convert to texture class. We use either with or without fractions, based on inputs
@@ -158,7 +175,7 @@ oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, 
       rm(z.legend,z.legendclass)
 
       xyz<- cbind(xy,z)
-      tex<- raster::rasterFromXYZ(xyz)
+      tex<- rasterFromXYZ(xyz)
 
       temp <- list("texture_raster"=tex, "legend"=rat)
       texout[[i]]<- temp
