@@ -19,5 +19,5 @@ LazyData: true
 RoxygenNote: 7.1.1
 Suggests: 
     testthat (>= 2.1.0)
-Imports: sp, raster, stats, caret, dplyr, methods, Rcpp, ithir
+Imports: sp, raster, stats, caret, dplyr, methods, Rcpp, ithir, RColorBrewer, rasterVis
 Depends: R (>= 3.5)

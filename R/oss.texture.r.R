@@ -13,33 +13,54 @@
 #' @param fs RasterLayer, RasterStack or RasterBrick
 #' @param vfs RasterLayer, RasterStack or RasterBrick
 #'
-#' @return list
+#' @return When the input data is RasterLayer, returns a list of two objects:
+#' texture_raster
+#'    RasterLayer of soil texture class as per the Canadian System of Soil Classification
+#'
+#' legend
+#'    data frame containing the factor levels for the soil texture class raster
+#'
+#' When the input data is a RasterStack or a RasterBrick, the function will return a list of lists.
+#' Each outer list item will represent the list of outputs for each layer of the RasterStack or Rasterbrick.
+#' The inner list will contain the 'texture_raster' and 'legend' objects as described above.
+#'
 #' @export
 #'
 #' @examples
-#' #create sample data which includes all combinations of sand, silt and clay
+#' # create sample data which includes all combinations of sand, silt and clay
 #' dat<- data.frame(expand.grid(sand=seq(0,100,1), silt=seq(0,100,1), clay=seq(0,100,1)))
 #' dat$sum<- dat$sand+dat$silt+dat$clay
 #' dat<- dat[dat$sum==100,]
+#' dat$x<- dat$sand
+#' dat$y<- dat$clay
 #'
-#' # assign these values to rasters
-#' sand<- raster::raster(nrows=51, ncols=101, vals=dat$sand)
-#' silt<- raster::raster(nrows=51, ncols=101, vals=dat$silt)
-#' clay<- raster::raster(nrows=51, ncols=101, vals=dat$clay)
+#' sp::coordinates(dat)<- ~x+y
+#' sp::gridded(dat)<- TRUE
+#' sand<- raster::raster(dat[1])
+#' silt<- raster::raster(dat[2])
+#' clay<- raster::raster(dat[3])
 #'
-#' #Create sand fraction data for testing
+#' # Create sand fraction data for testing
 #' vcs<- clay/(clay+silt+sand+clay+clay)*100
 #' cs<- silt/(clay+silt+sand+clay+clay)*100
 #' ms<- sand/(clay+silt+sand+clay+clay)*100
 #' fs<- clay/(clay+silt+sand+clay+clay)*100
 #' vfs<- clay/(clay+silt+sand+clay+clay)*100
 #'
-#' #Create a texture class raster without sand fractions
+#' # Create a texture class raster without sand fractions
 #' tex<- oss.texture.r(sand,silt,clay)
 #'
-#' #Create a texture class raster without sand fractions
-#' tex<- oss.texture.r(sand,silt,clay, vcs, cs, ms, fs, vfs)
+#' # And we can visualize using levelplot
+#' texture.map<- raster::ratify(tex[[1]])
+#' rat<- data.frame(raster::levels(texture.map))
+#' rat[["Texture"]]<- tex[[2]]$Class[match(rat$ID,tex$legend$Code)]
+#' levels(texture.map)<- rat
+#' myTheme<- rasterVis::rasterTheme(region=(grDevices::colorRampPalette(
+#'                                  RColorBrewer::brewer.pal(12, "Set3"))(13)))
+#' rasterVis::levelplot(texture.map, par.settings=myTheme)
 #'
+#' # Create a texture class raster with sand fractions
+#' tex_fractions<- oss.texture.r(sand,silt,clay, vcs, cs, ms, fs, vfs)
 #'
 oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vfs=NULL){
 
