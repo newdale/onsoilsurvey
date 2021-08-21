@@ -147,7 +147,7 @@ oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, 
       c<- as.vector(round(clay[[i]],0))
 
       #we can add the sand fractions here only if provided to the function, else we set them as NULL
-      if(!is.null(s1)|!is.null(cs)|!is.null(ms)|!is.null(fs)|!is.null(vfs)){
+      if(!is.null(vcs)|!is.null(cs)|!is.null(ms)|!is.null(fs)|!is.null(vfs)){
         s1<- as.vector(round(vcs,0))
         s2<- as.vector(round(cs,0))
         s3<- as.vector(round(ms,0))
