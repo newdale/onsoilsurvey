@@ -8,10 +8,10 @@
 #' @param show.R2.vals Boolean* object (default = FALSE) Should the VIF score be also described as an R squared value? (VIF = 1/1-R2)
 #'
 #' @return list* object
-#' First object is the column names of the covariates that are kept (i.e. have VIF scores lower than threshold)
-#' Second object is the column names of the covariates were removed (i.e., have VIF scores higher than threshold)
-#' Third object is a summary of the VIF scores of each covariate that was removed. NA indicates scores fell below threshold and removal was not performed
-#' Forth object is a complete report of each VIF score for each covariate for each time VIF was run
+#' Covariates_retained: First object is the column names of the covariates that are kept (i.e. have VIF scores lower than threshold)
+#' Covariates_removed: Second object is the column names of the covariates were removed (i.e., have VIF scores higher than threshold)
+#' VIF_removed: Third object is a summary of the VIF scores of each covariate that was removed. NA indicates scores fell below threshold and removal was not performed
+#' VIF_all: Forth object is a complete report of each VIF score for each covariate for each time VIF was run
 #'
 #' @export
 #'
@@ -135,7 +135,10 @@ oss.seqVIF <- function(cov_df, thresh, trace=FALSE, show.R2.vals=FALSE){
 
     #This list is ordered from first VIF to last VIF
     #(i.e., first variables to be removed and first VIF tables run are at the start)
-    return(list(names_kept_vec, names_rem_vec, vif_rem_vals, vif_dfs))
+    return(list(Covariates_retained=names_kept_vec,
+                Covariates_removed=names_rem_vec,
+                VIF_removed=vif_rem_vals,
+                VIF_all=vif_dfs))
 
   }
 }
