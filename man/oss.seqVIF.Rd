@@ -5,7 +5,7 @@
 \title{Perform sequential Variable Inflation Factor analysis for a dataframe of predictor variables
 Dataframe columns representing predictor variable values}
 \usage{
-oss.seqVIF(cov_df, thresh, trace = F, show.R2.vals = F)
+oss.seqVIF(cov_df, thresh, trace = FALSE, show.R2.vals = FALSE)
 }
 \arguments{
 \item{cov_df}{data.frame* object where each column represent covariate values.}
@@ -59,6 +59,6 @@ df <- cbind(df, random_rasters)
 # removing the covariate with the highest VIF value,
 # then repeating until threshold is hit
 
-vif_results <- oss.seqVIF(df, thresh=5, trace=T, show.R2.vals=T) #Some of the correlated layers get removed
+vif_results <- oss.seqVIF(df, thresh=5, trace=FALSE, show.R2.vals=TRUE)
 
 }

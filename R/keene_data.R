@@ -6,7 +6,7 @@
 #'
 #' @docType data
 #'
-#' @usage require(raster); data(keene)
+#' @usage data(keene)
 #'
 #' @format An object of class `"raster"`.
 #'

@@ -47,10 +47,10 @@
 #' # removing the covariate with the highest VIF value,
 #' # then repeating until threshold is hit
 #'
-#' vif_results <- oss.seqVIF(df, thresh=5, trace=T, show.R2.vals=T)
+#' vif_results <- oss.seqVIF(df, thresh=5, trace=FALSE, show.R2.vals=TRUE)
 #'
 
-oss.seqVIF <- function(cov_df, thresh, trace=F, show.R2.vals=F){
+oss.seqVIF <- function(cov_df, thresh, trace=FALSE, show.R2.vals=FALSE){
 
   ###Load required library or throw error
   if(any(!'data.frame' %in% class(cov_df))){cov_df <- data.frame(cov_df)}
@@ -59,8 +59,8 @@ oss.seqVIF <- function(cov_df, thresh, trace=F, show.R2.vals=F){
   vif_init <- NULL
   for(covar in names(cov_df)){
     regressors <- names(cov_df)[names(cov_df) != covar]
-    form <- formula(paste(covar, '~', paste(regressors, collapse = '+')))
-    vif_init <- rbind(vif_init, c(covar, fmsb::VIF(lm(form, data = cov_df))))
+    form <- stats::formula(paste(covar, '~', paste(regressors, collapse = '+')))
+    vif_init <- rbind(vif_init, c(covar, fmsb::VIF(stats::lm(form, data = cov_df))))
   }
   max_vif <- max(as.numeric(vif_init[,2]), na.rm = TRUE)
 
@@ -82,12 +82,12 @@ oss.seqVIF <- function(cov_df, thresh, trace=F, show.R2.vals=F){
 
     #Backwards selection of explanatory variables, stops when all VIF values are below 'thresh'
     while(max_vif >= thresh){
-    if(ncol(in_dat) <= 2){print("Removed all covariates but two, stopping"); break} #If not enough covariates to do lm, stop - shouldn't this be 1?
+    if(ncol(in_dat) <= 2){print("Removed all covariates but two, stopping"); break} #If not enough covariates to do linear model, stop - shouldn't this be 1?
       vif_vals <- NULL
       for(covar in names(in_dat)){
         regressors <- names(in_dat)[names(in_dat) != covar]
-        form <- formula(paste(covar, '~', paste(regressors, collapse = '+')))
-        vif_vals <- rbind(vif_vals, c(covar, fmsb::VIF(lm(form, data = in_dat))))
+        form <- stats::formula(paste(covar, '~', paste(regressors, collapse = '+')))
+        vif_vals <- rbind(vif_vals, c(covar, fmsb::VIF(stats::lm(form, data = in_dat))))
       }
 
       #Record max value
@@ -117,7 +117,7 @@ oss.seqVIF <- function(cov_df, thresh, trace=F, show.R2.vals=F){
     names_kept_vec <- names(in_dat)
 
     #Update columns of vif_rem_vals with covariates that were not removed during VIF because either:
-    #they were below threshold or because lm breaks down with 2 covariates
+    #they were below threshold or because linear model breaks down with 2 covariates
     colnames(vif_rem_vals) <- c("Covariate", "VIF_score_at_removal")
     vif_rem_vals[,2] <- as.numeric(vif_rem_vals[,2])
 
