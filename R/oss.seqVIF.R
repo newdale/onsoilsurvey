@@ -1,17 +1,16 @@
-#' Perform sequential Variable Inflation Factor analysis for a dataframe of predictor variables
-#' Dataframe columns representing predictor variable values
+#' Perform Sequential Variable Inflation Factor Analysis
 #'
+#'Perform sequential Variable Inflation Factor analysis for a dataframe of predictor variables with dataframe columns representing predictor variable values
 #'
 #' @param cov_df data.frame* object where each column represent covariate values.
 #' @param thresh numeric* object Perform sequential VIF until all covariates have VIF scores lower than this value
 #' @param trace Boolean* object (default = FALSE). Should the results of each VIF be shown in the console?
 #' @param show.R2.vals Boolean* object (default = FALSE) Should the VIF score be also described as an R squared value? (VIF = 1/1-R2)
 #'
-#' @return list* object
-#' Covariates_retained: First object is the column names of the covariates that are kept (i.e. have VIF scores lower than threshold)
-#' Covariates_removed: Second object is the column names of the covariates were removed (i.e., have VIF scores higher than threshold)
-#' VIF_removed: Third object is a summary of the VIF scores of each covariate that was removed. NA indicates scores fell below threshold and removal was not performed
-#' VIF_all: Forth object is a complete report of each VIF score for each covariate for each time VIF was run
+#' @return Returns a list of 4 objects: 1. Covariates_retained: First object is the column names of the covariates that are kept (i.e. have VIF scores lower than threshold).
+#' 2. Covariates_removed: Second object is the column names of the covariates were removed (i.e., have VIF scores higher than threshold).
+#' 3. VIF_removed: Third object is a summary of the VIF scores of each covariate that was removed. NA indicates scores fell below threshold and removal was not performed.
+#' 4. VIF_all: Forth object is a complete report of each VIF score for each covariate for each time VIF was run.
 #'
 #' @export
 #'

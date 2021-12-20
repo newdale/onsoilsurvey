@@ -2,8 +2,7 @@
 % Please edit documentation in R/oss.seqVIF.R
 \name{oss.seqVIF}
 \alias{oss.seqVIF}
-\title{Perform sequential Variable Inflation Factor analysis for a dataframe of predictor variables
-Dataframe columns representing predictor variable values}
+\title{Perform Sequential Variable Inflation Factor Analysis}
 \usage{
 oss.seqVIF(cov_df, thresh, trace = FALSE, show.R2.vals = FALSE)
 }
@@ -17,15 +16,13 @@ oss.seqVIF(cov_df, thresh, trace = FALSE, show.R2.vals = FALSE)
 \item{show.R2.vals}{Boolean* object (default = FALSE) Should the VIF score be also described as an R squared value? (VIF = 1/1-R2)}
 }
 \value{
-list* object
-First object is the column names of the covariates that are kept (i.e. have VIF scores lower than threshold)
-Second object is the column names of the covariates were removed (i.e., have VIF scores higher than threshold)
-Third object is a summary of the VIF scores of each covariate that was removed. NA indicates scores fell below threshold and removal was not performed
-Forth object is a complete report of each VIF score for each covariate for each time VIF was run
+Returns a list of 4 objects: 1. Covariates_retained: First object is the column names of the covariates that are kept (i.e. have VIF scores lower than threshold).
+2. Covariates_removed: Second object is the column names of the covariates were removed (i.e., have VIF scores higher than threshold).
+3. VIF_removed: Third object is a summary of the VIF scores of each covariate that was removed. NA indicates scores fell below threshold and removal was not performed.
+4. VIF_all: Forth object is a complete report of each VIF score for each covariate for each time VIF was run.
 }
 \description{
-Perform sequential Variable Inflation Factor analysis for a dataframe of predictor variables
-Dataframe columns representing predictor variable values
+Perform sequential Variable Inflation Factor analysis for a dataframe of predictor variables with dataframe columns representing predictor variable values
 }
 \examples{
 #Perform sequential VIF on an environmental raster stack
