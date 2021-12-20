@@ -47,7 +47,7 @@
 #' # removing the covariate with the highest VIF value,
 #' # then repeating until threshold is hit
 #'
-#' vif_results <- oss.seqVIF(df, thresh=5, trace=T, show.R2.vals=T) #Some of the correlated layers get removed
+#' vif_results <- oss.seqVIF(df, thresh=5, trace=T, show.R2.vals=T)
 #'
 
 oss.seqVIF <- function(cov_df, thresh, trace=F, show.R2.vals=F){
