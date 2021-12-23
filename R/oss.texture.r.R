@@ -80,7 +80,7 @@
 #' # Create a texture class raster with sand fractions
 #' tex_fractions<- oss.texture.r(sand,silt,clay, vcs, cs, ms, fs, vfs)
 #'
-oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vfs=NULL, tri="USDA"){
+oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vfs=NULL, tri="CSSC"){
 
   #set the triangle
   tri<- tri
