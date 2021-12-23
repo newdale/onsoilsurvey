@@ -15,25 +15,28 @@ oss.texture(
   cs = NULL,
   ms = NULL,
   fs = NULL,
-  vfs = NULL
+  vfs = NULL,
+  triangle = "CSSC"
 )
 }
 \arguments{
-\item{sand}{numeric}
+\item{sand}{numeric, sand (0.5 - 2 mm) content either in decimal or percentage (e.g. 0.25 or 25)}
 
-\item{silt}{numeric}
+\item{silt}{numeric, silt (0.002 - 0.05 mm) content either in decimal or percentage (e.g. 0.25 or 25)}
 
-\item{clay}{numeric}
+\item{clay}{numeric, clay (<0.002 mm) content either in decimal or percentage (e.g. 0.25 or 25)}
 
-\item{vcs}{numeric}
+\item{vcs}{numeric, very coarse sand (1 - 2 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
 
-\item{cs}{numeric}
+\item{cs}{numeric, coarse sand (0.5 - 1 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
 
-\item{ms}{numeric}
+\item{ms}{numeric, medium sand (0.25 - 0.50 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
 
-\item{fs}{numeric}
+\item{fs}{numeric, fine sand (0.10 - 0.25 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
 
-\item{vfs}{numeric}
+\item{vfs}{numeric, very fine sand (0.05 - 0.10 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
+
+\item{triangle}{character, current choices are "CSSC" for Canadian System of Soil Classification (default), or "USDA" for United States Department of Agriculture}
 }
 \value{
 character

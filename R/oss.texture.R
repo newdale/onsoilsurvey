@@ -4,14 +4,15 @@
 #' If sand fraction data is provided, modifiers (coarse, fine, very fine)
 #' will be assigned to the sands, loamy sands and sandy loams.
 #'
-#' @param sand numeric
-#' @param silt numeric
-#' @param clay numeric
-#' @param vcs numeric
-#' @param cs numeric
-#' @param ms numeric
-#' @param fs numeric
-#' @param vfs numeric
+#' @param sand numeric, sand (0.5 - 2 mm) content either in decimal or percentage (e.g. 0.25 or 25)
+#' @param silt numeric, silt (0.002 - 0.05 mm) content either in decimal or percentage (e.g. 0.25 or 25)
+#' @param clay numeric, clay (<0.002 mm) content either in decimal or percentage (e.g. 0.25 or 25)
+#' @param vcs numeric, very coarse sand (1 - 2 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand
+#' @param cs numeric, coarse sand (0.5 - 1 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand
+#' @param ms numeric, medium sand (0.25 - 0.50 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand
+#' @param fs numeric, fine sand (0.10 - 0.25 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand
+#' @param vfs numeric, very fine sand (0.05 - 0.10 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand
+#' @param triangle character, current choices are "CSSC" for Canadian System of Soil Classification (default), or "USDA" for United States Department of Agriculture
 #'
 #' @return character
 #' @export
@@ -36,7 +37,7 @@
 #' #or return it as a new column in the data frame
 #' dat$class<- mapply(oss.texture,sand=dat$sand, silt=dat$silt, clay=dat$clay)
 #'
-oss.texture<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vfs=NULL){
+oss.texture<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vfs=NULL, triangle="CSSC"){
 
   clay<- clay
   silt<- silt
@@ -170,5 +171,8 @@ oss.texture<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vf
     }
 
   }else{tclass<- NA}
+
+  if(triangle=="USDA" & tclass=="heavy clay"){tclass<- "clay"}
+
   tclass
 }
