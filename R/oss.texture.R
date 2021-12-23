@@ -1,6 +1,6 @@
 #'
 #' Use particle size analysis data to determine the texture
-#' class in the Canadian System of Soil Classification.
+#' class in the Canadian System of Soil Classification or USDA
 #' If sand fraction data is provided, modifiers (coarse, fine, very fine)
 #' will be assigned to the sands, loamy sands and sandy loams.
 #'
@@ -12,7 +12,7 @@
 #' @param ms numeric, medium sand (0.25 - 0.50 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand
 #' @param fs numeric, fine sand (0.10 - 0.25 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand
 #' @param vfs numeric, very fine sand (0.05 - 0.10 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand
-#' @param triangle character, current choices are "CSSC" for Canadian System of Soil Classification (default), or "USDA" for United States Department of Agriculture
+#' @param tri character, current choices are "CSSC" for Canadian System of Soil Classification (default), or "USDA" for United States Department of Agriculture
 #'
 #' @return character
 #' @export
@@ -37,7 +37,7 @@
 #' #or return it as a new column in the data frame
 #' dat$class<- mapply(oss.texture,sand=dat$sand, silt=dat$silt, clay=dat$clay)
 #'
-oss.texture<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vfs=NULL, triangle="CSSC"){
+oss.texture<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vfs=NULL, tri="CSSC"){
 
   clay<- clay
   silt<- silt
@@ -47,6 +47,7 @@ oss.texture<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vf
   ms<- ms
   fs<- fs
   vfs<- vfs
+  tri<- tri
 
   # start by looking at the sums of the sand, silt and clay
   psa<- sand + silt + clay
@@ -166,13 +167,12 @@ oss.texture<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vf
     } else if(clay >= 35 & clay <= 60 & sand > 45 ) {tclass<- 'sandy clay'
     } else if(clay >= 40 & clay <= 60 & silt >= 40) {tclass<- 'silty clay'
     } else if(clay >= 40 & clay <= 60 & silt < 40 & sand <= 45) {tclass<- 'clay'
-    } else if(clay >60){tclass<- 'heavy clay'
+    } else if(clay >60 & tri=="USDA"){tclass <- 'clay'
+    } else if(clay >60 & tri=="CSSC"){tclass<- 'heavy clay'
     } else {tclass<- 'texture class error'
     }
 
   }else{tclass<- NA}
-
-  if(triangle=="USDA" & tclass=="heavy clay"){tclass<- "clay"}
 
   tclass
 }

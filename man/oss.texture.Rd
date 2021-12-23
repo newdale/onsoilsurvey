@@ -3,7 +3,7 @@
 \name{oss.texture}
 \alias{oss.texture}
 \title{Use particle size analysis data to determine the texture
-class in the Canadian System of Soil Classification.
+class in the Canadian System of Soil Classification or USDA
 If sand fraction data is provided, modifiers (coarse, fine, very fine)
 will be assigned to the sands, loamy sands and sandy loams.}
 \usage{
@@ -16,7 +16,7 @@ oss.texture(
   ms = NULL,
   fs = NULL,
   vfs = NULL,
-  triangle = "CSSC"
+  tri = "CSSC"
 )
 }
 \arguments{
@@ -36,14 +36,14 @@ oss.texture(
 
 \item{vfs}{numeric, very fine sand (0.05 - 0.10 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
 
-\item{triangle}{character, current choices are "CSSC" for Canadian System of Soil Classification (default), or "USDA" for United States Department of Agriculture}
+\item{tri}{character, current choices are "CSSC" for Canadian System of Soil Classification (default), or "USDA" for United States Department of Agriculture}
 }
 \value{
 character
 }
 \description{
 Use particle size analysis data to determine the texture
-class in the Canadian System of Soil Classification.
+class in the Canadian System of Soil Classification or USDA
 If sand fraction data is provided, modifiers (coarse, fine, very fine)
 will be assigned to the sands, loamy sands and sandy loams.
 }

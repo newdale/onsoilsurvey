@@ -3,7 +3,7 @@
 \name{oss.texture.r}
 \alias{oss.texture.r}
 \title{Use particle size analysis raster data to create a texture
-class raster based on the the Canadian System of Soil Classification.
+class raster based on the the Canadian System of Soil Classification or USDA.
 If sand fraction data is provided, modifiers (coarse, fine, very fine)
 will be assigned to the sands, loamy sands and sandy loams.}
 \usage{
@@ -16,7 +16,7 @@ oss.texture.r(
   ms = NULL,
   fs = NULL,
   vfs = NULL,
-  triangle = "CSSC"
+  tri = "USDA"
 )
 }
 \arguments{
@@ -36,7 +36,7 @@ oss.texture.r(
 
 \item{vfs}{RasterLayer, RasterStack or RasterBrick of very fine sand (0.05 - 0.10 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
 
-\item{triangle}{character, current choices are "CSSC" for Canadian System of Soil Classification (default), or "USDA" for United States Department of Agriculture}
+\item{tri}{character, current choices are "CSSC" for Canadian System of Soil Classification (default), or "USDA" for United States Department of Agriculture}
 }
 \value{
 When the input data is RasterLayer, returns a list of two objects:
@@ -52,7 +52,7 @@ The inner list will contain the 'texture_raster' and 'legend' objects as describ
 }
 \description{
 Use particle size analysis raster data to create a texture
-class raster based on the the Canadian System of Soil Classification.
+class raster based on the the Canadian System of Soil Classification or USDA.
 If sand fraction data is provided, modifiers (coarse, fine, very fine)
 will be assigned to the sands, loamy sands and sandy loams.
 }
