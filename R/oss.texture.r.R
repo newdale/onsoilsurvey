@@ -4,14 +4,15 @@
 #' If sand fraction data is provided, modifiers (coarse, fine, very fine)
 #' will be assigned to the sands, loamy sands and sandy loams.
 #'
-#' @param sand RasterLayer, RasterStack or RasterBrick
-#' @param silt RasterLayer, RasterStack or RasterBrick
-#' @param clay RasterLayer, RasterStack or RasterBrick
-#' @param vcs RasterLayer, RasterStack or RasterBrick
-#' @param cs RasterLayer, RasterStack or RasterBrick
-#' @param ms RasterLayer, RasterStack or RasterBrick
-#' @param fs RasterLayer, RasterStack or RasterBrick
-#' @param vfs RasterLayer, RasterStack or RasterBrick
+#' @param sand RasterLayer, RasterStack or RasterBrick of sand (0.5 - 2 mm) content either in decimal or percentage (e.g. 0.25 or 25)
+#' @param silt RasterLayer, RasterStack or RasterBrick of silt (0.002 - 0.05 mm) content either in decimal or percentage (e.g. 0.25 or 25)
+#' @param clay RasterLayer, RasterStack or RasterBrick of clay (<0.002 mm) content either in decimal or percentage (e.g. 0.25 or 25)
+#' @param vcs RasterLayer, RasterStack or RasterBrick of very coarse sand (1 - 2 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand
+#' @param cs RasterLayer, RasterStack or RasterBrick of coarse sand (0.5 - 1 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand
+#' @param ms RasterLayer, RasterStack or RasterBrick of medium sand (0.25 - 0.50 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand
+#' @param fs RasterLayer, RasterStack or RasterBrick of fine sand (0.10 - 0.25 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand
+#' @param vfs RasterLayer, RasterStack or RasterBrick of very fine sand (0.05 - 0.10 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand
+#' @param triangle character, current choices are "CSSC" for Canadian System of Soil Classification (default), or "USDA" for United States Department of Agriculture
 #'
 #' @return When the input data is RasterLayer, returns a list of two objects:
 #' texture_raster
@@ -79,7 +80,7 @@
 #' # Create a texture class raster with sand fractions
 #' tex_fractions<- oss.texture.r(sand,silt,clay, vcs, cs, ms, fs, vfs)
 #'
-oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vfs=NULL){
+oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vfs=NULL, triangle="CSSC"){
 
   #create the standardized legend
   tex.legend<- data.frame(TextureClass=c("coarse sand","sand", "fine sand", "very fine sand",
@@ -116,9 +117,9 @@ oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, 
 
     # here we use mapply to convert to texture class. We use either with or without fractions, based on inputs
     if(is.null(s1)){
-      z<- mapply(onsoilsurvey::oss.texture,sand=s, silt=si, clay=c)
+      z<- mapply(onsoilsurvey::oss.texture,sand=s, silt=si, clay=c, triangle=triangle)
     }else{
-      z<- mapply(onsoilsurvey::oss.texture,sand=s, silt=si, clay=c, vcs=s1, cs=s2, ms=s3, fs=s4, vfs=s5)}
+      z<- mapply(onsoilsurvey::oss.texture,sand=s, silt=si, clay=c, vcs=s1, cs=s2, ms=s3, fs=s4, vfs=s5, triangle=trianle)}
 
     z<- tex.legend$Code[match(z,tex.legend$TextureClass)]
     z.legend<- unique(z)
@@ -163,9 +164,9 @@ oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, 
 
       # here we use mapply to convert to texture class. We use either with or without fractions, based on inputs
       if(is.null(s1)){
-        z<- mapply(onsoilsurvey::oss.texture,sand=s, silt=si, clay=c)
+        z<- mapply(onsoilsurvey::oss.texture,sand=s, silt=si, clay=c, triangle=triangle)
       }else{
-        z<- mapply(onsoilsurvey::oss.texture,sand=s, silt=si, clay=c, vcs=s1, cs=s2, ms=s3, fs=s4, vfs=s5)}
+        z<- mapply(onsoilsurvey::oss.texture,sand=s, silt=si, clay=c, vcs=s1, cs=s2, ms=s3, fs=s4, vfs=s5, triangle=triangle)}
 
       z<- tex.legend$Code[match(z,tex.legend$TextureClass)]
       z.legend<- unique(z)

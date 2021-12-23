@@ -15,25 +15,28 @@ oss.texture.r(
   cs = NULL,
   ms = NULL,
   fs = NULL,
-  vfs = NULL
+  vfs = NULL,
+  triangle = "CSSC"
 )
 }
 \arguments{
-\item{sand}{RasterLayer, RasterStack or RasterBrick}
+\item{sand}{RasterLayer, RasterStack or RasterBrick of sand (0.5 - 2 mm) content either in decimal or percentage (e.g. 0.25 or 25)}
 
-\item{silt}{RasterLayer, RasterStack or RasterBrick}
+\item{silt}{RasterLayer, RasterStack or RasterBrick of silt (0.002 - 0.05 mm) content either in decimal or percentage (e.g. 0.25 or 25)}
 
-\item{clay}{RasterLayer, RasterStack or RasterBrick}
+\item{clay}{RasterLayer, RasterStack or RasterBrick of clay (<0.002 mm) content either in decimal or percentage (e.g. 0.25 or 25)}
 
-\item{vcs}{RasterLayer, RasterStack or RasterBrick}
+\item{vcs}{RasterLayer, RasterStack or RasterBrick of very coarse sand (1 - 2 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
 
-\item{cs}{RasterLayer, RasterStack or RasterBrick}
+\item{cs}{RasterLayer, RasterStack or RasterBrick of coarse sand (0.5 - 1 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
 
-\item{ms}{RasterLayer, RasterStack or RasterBrick}
+\item{ms}{RasterLayer, RasterStack or RasterBrick of medium sand (0.25 - 0.50 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
 
-\item{fs}{RasterLayer, RasterStack or RasterBrick}
+\item{fs}{RasterLayer, RasterStack or RasterBrick of fine sand (0.10 - 0.25 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
 
-\item{vfs}{RasterLayer, RasterStack or RasterBrick}
+\item{vfs}{RasterLayer, RasterStack or RasterBrick of very fine sand (0.05 - 0.10 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
+
+\item{triangle}{character, current choices are "CSSC" for Canadian System of Soil Classification (default), or "USDA" for United States Department of Agriculture}
 }
 \value{
 When the input data is RasterLayer, returns a list of two objects:
