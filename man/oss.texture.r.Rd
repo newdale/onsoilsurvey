@@ -16,7 +16,7 @@ oss.texture.r(
   ms = NULL,
   fs = NULL,
   vfs = NULL,
-  tri = "USDA"
+  tri = "CSSC"
 )
 }
 \arguments{
