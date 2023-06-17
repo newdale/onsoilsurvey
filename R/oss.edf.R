@@ -2,97 +2,99 @@
 #'
 #' Calculate Euclidean distance fields for an input raster.
 #' Calculate distance from each raster cell to NW, NE, SW,
-#' SE, Y max, X max and middle of the raster. Outputs to a rasterstack.
+#' SE, Y max, X max and middle of the raster. Outputs to a SpatRaster.
 #'
-#' @param x Raster* object
+#' @param x SpatRaster or Raster* object
 #'
-#' @return RasterStack* object
+#' @return SpatRaster* object
 #' @export
 #'
 #' @examples
 #' #Calculate Euclidean distance fields from a DEM raster
-#' library(raster)
+#' library(terra)
 #' data(keene)
 #' oss.edf(keene)
 #'
 #'
 oss.edf<- function(x){
 
+  # for compatibility with raster, if x is a RasterLayer, will convert to SpatRaster
+  if(class(x)=="RasterLayer"){x<- rast(x)}
+
   # first we set up window and plot source raster
   graphics::par(mfrow=c(2,4), mar=c(0.2,0.2,1.5,0.2), oma=c(0.2,0.2,2,2))
-  raster::plot(x, main = "Source", legend=FALSE, axes=FALSE)
+  terra::plot(x, main = "Source", legend=FALSE, axes=FALSE)
 
-  # next convert the raster to a dataframe for calculating the XDIST and YDIST
-  d2<- methods::as(x,"SpatialPointsDataFrame")
-  d2<- as.data.frame(d2@coords)
-  d2$xdist<- x@extent@xmax - d2$x
-  d2$ydist<- x@extent@ymax - d2$y
+  # next convert the SpatRaster to a dataframe for calculating the XDIST and YDIST
+  d2<- data.frame(terra::crds(x))
+  d2$xdist<- max(d2$x) - d2$x
+  d2$ydist<- max(d2$y) - d2$y
 
   # calculate the XDIST, which is the X distance from every raster cell to xmax coordinate
-  xgrid<- subset(d2,select=c("x","y",'xdist'))
+  xgrid<- terra::subset(d2,select=c("x","y",'xdist'))
   sp::coordinates(xgrid)<- c("x","y")
   sp::gridded(xgrid)<-TRUE
-  xgrid<- raster::raster(xgrid)
-  xgrid<- raster::resample(xgrid,x,method="ngb")
-  raster::plot(xgrid, main='Dist XMax',legend=FALSE,axes=FALSE)
-  raster::projection(xgrid)<- raster::crs(x)
-  xgrid<- raster::mask(x = xgrid, mask = x)
+  xgrid<- terra::rast(xgrid)
+  xgrid<- terra::resample(xgrid,x,method="near")
+  terra::plot(xgrid, main='Dist XMax',legend=FALSE,axes=FALSE)
+  terra::crs(xgrid)<- terra::crs(x)
+  xgrid<- terra::mask(x = xgrid, mask = x)
   print("DISTANCE FROM XMAX COMPLETE")
 
   # calculate the YDIST, which is the Y distance from every raster cell to ymax coordinate
-  ygrid<- subset(d2,select=c("x","y",'ydist'))
+  ygrid<- terra::subset(d2,select=c("x","y",'ydist'))
   sp::coordinates(ygrid)<- c("x","y")
   sp::gridded(ygrid)<-TRUE
-  ygrid<- raster::raster(ygrid)
-  ygrid<- raster::resample(ygrid,x,method="ngb")
-  raster::plot(ygrid, main='Dist YMax',legend=FALSE,axes=FALSE)
-  raster::projection(ygrid) <- raster::crs(x)
-  ygrid<- raster::mask(x = ygrid, mask = x)
+  ygrid<- terra::rast(ygrid)
+  ygrid<- terra::resample(ygrid,x,method="near")
+  terra::plot(ygrid, main='Dist YMax',legend=FALSE,axes=FALSE)
+  terra::crs(ygrid) <- terra::crs(x)
+  ygrid<- terra::mask(x = ygrid, mask = x)
   print("DISTANCE FROM YMAX COMPLETE")
 
   # now we need to generate vectors representing the 4 corners and the center of the raster
-  nw  <- c(x@extent@xmin,x@extent@ymax)
-  sw  <- c(x@extent@xmin,x@extent@ymin)
-  ne  <- c(x@extent@xmax,x@extent@ymax)
-  se  <- c(x@extent@xmax,x@extent@ymin)
-  mid<- c(round(x@extent@xmax - ((x@extent@xmax - x@extent@xmin)/2),0),round(x@extent@ymax - ((x@extent@ymax - x@extent@ymin)/2),0))
+  nw  <- cbind(min(d2$x),max(d2$y))
+  sw  <- cbind(min(d2$x),min(d2$y))
+  ne  <- cbind(max(d2$x),max(d2$y))
+  se  <- cbind(max(d2$x),min(d2$y))
+  mid<- cbind(round(max(d2$x) - ((max(d2$x) - min(d2$x))/2),0),round(max(d2$y) - ((max(d2$y) - min(d2$y))/2),0))
 
   # generate distance to NW corner grid
-  NW<- raster::distanceFromPoints(x,nw)
-  NW<- raster::mask(x = NW, mask = x)
-  raster::projection(NW) <- raster::crs(x)
-  raster::plot(NW, main='Dist NW',legend=FALSE,axes=FALSE)
+  NW<- terra::distance(x,vect(nw,crs=crs(x)))
+  NW<- terra::mask(x = NW, mask = x)
+  terra::crs(NW) <- terra::crs(x)
+  terra::plot(NW, main='Dist NW',legend=FALSE,axes=FALSE)
   print('DISTANCE FROM NW COMPLETE')
 
   # generate distance to SW corner grid
-  SW<- raster::distanceFromPoints(x,sw)
-  SW<- raster::mask(x = SW, mask = x)
-  raster::projection(SW) <- raster::crs(x)
-  raster::plot(SW, main='Dist SW',legend=FALSE,axes=FALSE)
+  SW<- terra::distance(x,vect(sw,crs=crs(x)))
+  SW<- terra::mask(x = SW, mask = x)
+  terra::crs(SW) <- terra::crs(x)
+  terra::plot(SW, main='Dist SW',legend=FALSE,axes=FALSE)
   print('DISTANCE FROM SW COMPLETE')
 
   # generate distance to NE corner grid
-  NE<- raster::distanceFromPoints(x,ne)
-  NE<- raster::mask(x = NE, mask = x)
-  raster::projection(NE) <- raster::crs(x)
-  raster::plot(NE, main='Dist from NE',legend=FALSE,axes=FALSE)
+  NE<- terra::distance(x,vect(ne,crs=crs(x)))
+  NE<- terra::mask(x = NE, mask = x)
+  terra::crs(NE) <- terra::crs(x)
+  terra::plot(NE, main='Dist from NE',legend=FALSE,axes=FALSE)
   print('DISTANCE FROM NE COMPLETE')
 
   # generate distance to SE corner grid
-  SE<- raster::distanceFromPoints(x,se)
-  SE<- raster::mask(x = SE, mask = x)
-  raster::projection(SE) <- raster::crs(x)
-  raster::plot(SE, main='Dist SE',legend=FALSE,axes=FALSE)
+  SE<- terra::distance(x,vect(se,crs=crs(x)))
+  SE<- terra::mask(x = SE, mask = x)
+  terra::crs(SE) <- terra::crs(x)
+  terra::plot(SE, main='Dist SE',legend=FALSE,axes=FALSE)
   print('DISTANCE FROM SE COMPLETE')
 
   # generate distance to CENTRE grid
-  ctr<- raster::distanceFromPoints(x,mid)
-  ctr<- raster::mask(x = ctr, mask = x)
-  raster::projection(ctr) <- raster::crs(x)
-  raster::plot(ctr, main='Dist MID',legend=FALSE,axes=FALSE)
+  ctr<- terra::distance(x,vect(mid,crs=crs(x)))
+  ctr<- terra::mask(x = ctr, mask = x)
+  terra::crs(ctr) <- terra::crs(x)
+  terra::plot(ctr, main='Dist MID',legend=FALSE,axes=FALSE)
   print('DISTANCE FROM CENTRE COMPLETE')
 
-  edf.stack<- raster::stack(xgrid,ygrid,NW,SW,NE,SE,ctr)
+  edf.stack<- terra::rast(c(xgrid,ygrid,NW,SW,NE,SE,ctr))
   names(edf.stack)<- c('distx','disty','distnw','distsw','distne','distse','distmid')
   return(edf.stack)
 }
