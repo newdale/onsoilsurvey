@@ -2,8 +2,8 @@
 % Please edit documentation in R/oss.texture.r.R
 \name{oss.texture.r}
 \alias{oss.texture.r}
-\title{Use particle size analysis raster data to create a texture
-class raster based on the the Canadian System of Soil Classification or USDA.
+\title{Use particle size analysis SpatRaster data to create a texture
+class SpatRaster based on the the Canadian System of Soil Classification or USDA.
 If sand fraction data is provided, modifiers (coarse, fine, very fine)
 will be assigned to the sands, loamy sands and sandy loams.}
 \usage{
@@ -20,47 +20,43 @@ oss.texture.r(
 )
 }
 \arguments{
-\item{sand}{RasterLayer, RasterStack or RasterBrick of sand (0.5 - 2 mm) content either in decimal or percentage (e.g. 0.25 or 25)}
+\item{sand}{RasterLayer, or SpatRaster of sand (0.5 - 2 mm) content either in decimal or percentage (e.g. 0.25 or 25)}
 
-\item{silt}{RasterLayer, RasterStack or RasterBrick of silt (0.002 - 0.05 mm) content either in decimal or percentage (e.g. 0.25 or 25)}
+\item{silt}{RasterLayer, or SpatRaster of silt (0.002 - 0.05 mm) content either in decimal or percentage (e.g. 0.25 or 25)}
 
-\item{clay}{RasterLayer, RasterStack or RasterBrick of clay (<0.002 mm) content either in decimal or percentage (e.g. 0.25 or 25)}
+\item{clay}{RasterLayer, or SpatRaster of clay (<0.002 mm) content either in decimal or percentage (e.g. 0.25 or 25)}
 
-\item{vcs}{RasterLayer, RasterStack or RasterBrick of very coarse sand (1 - 2 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
+\item{vcs}{RasterLayer, or SpatRaster of very coarse sand (1 - 2 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
 
-\item{cs}{RasterLayer, RasterStack or RasterBrick of coarse sand (0.5 - 1 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
+\item{cs}{RasterLayer, or SpatRaster of coarse sand (0.5 - 1 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
 
-\item{ms}{RasterLayer, RasterStack or RasterBrick of medium sand (0.25 - 0.50 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
+\item{ms}{RasterLayer, or SpatRaster of medium sand (0.25 - 0.50 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
 
-\item{fs}{RasterLayer, RasterStack or RasterBrick of fine sand (0.10 - 0.25 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
+\item{fs}{RasterLayer, or SpatRaster of fine sand (0.10 - 0.25 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
 
-\item{vfs}{RasterLayer, RasterStack or RasterBrick of very fine sand (0.05 - 0.10 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
+\item{vfs}{RasterLayer, or SpatRaster of very fine sand (0.05 - 0.10 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
 
 \item{tri}{character, current choices are "CSSC" for Canadian System of Soil Classification (default), or "USDA" for United States Department of Agriculture}
 }
 \value{
-When the input data is RasterLayer, returns a list of two objects:
+When the input data is SpatRaster with only one layer, returns a list of two objects:
 texture_raster
-   RasterLayer of soil texture class as per the Canadian System of Soil Classification
+   SpatRaster of soil texture class as per the selected soil classification system
 
 legend
    data frame containing the factor levels for the soil texture class raster
 
-When the input data is a RasterStack or a RasterBrick, the function will return a list of lists.
-Each outer list item will represent the list of outputs for each layer of the RasterStack or Rasterbrick.
+When the input data is a SpatRaster with more than one layer (i.e., stack), the function will return a list of lists.
+Each outer list item will represent the list of outputs for each layer of the SpatRaster.
 The inner list will contain the 'texture_raster' and 'legend' objects as described above.
 }
 \description{
-Use particle size analysis raster data to create a texture
-class raster based on the the Canadian System of Soil Classification or USDA.
+Use particle size analysis SpatRaster data to create a texture
+class SpatRaster based on the the Canadian System of Soil Classification or USDA.
 If sand fraction data is provided, modifiers (coarse, fine, very fine)
 will be assigned to the sands, loamy sands and sandy loams.
 }
 \examples{
-require(sp)
-require(raster)
-require(rasterVis)
-require(RColorBrewer)
 
 # create sample data which includes all combinations of sand, silt and clay
 dat<- data.frame(expand.grid(sand=seq(0,100,1), silt=seq(0,100,1), clay=seq(0,100,1)))
@@ -68,32 +64,70 @@ dat$sum<- dat$sand+dat$silt+dat$clay
 dat<- dat[dat$sum==100,]
 dat$x<- dat$sand
 dat$y<- dat$clay
+dat<- dat[,c(5,6,1,2,3)]
 
-coordinates(dat)<- ~x+y
-gridded(dat)<- TRUE
-sand<- raster(dat[1])
-silt<- raster(dat[2])
-clay<- raster(dat[3])
-
-# Create sand fraction data for testing
-vcs<- clay/(clay+silt+sand+clay+clay)*100
-cs<- silt/(clay+silt+sand+clay+clay)*100
-ms<- sand/(clay+silt+sand+clay+clay)*100
-fs<- clay/(clay+silt+sand+clay+clay)*100
-vfs<- clay/(clay+silt+sand+clay+clay)*100
+sand<- terra::rast(dat[,c(1:3)], type="xyz")
+silt<- terra::rast(dat[,c(1,2,4)], type="xyz")
+clay<- terra::rast(dat[,c(1,2,5)], type="xyz")
 
 # Create a texture class raster without sand fractions
 tex<- oss.texture.r(sand,silt,clay)
 
-# And we can visualize using levelplot
-texture.map<- ratify(tex[[1]])
-rat<- data.frame(levels(texture.map))
+# And we can visualize
+texture.map<- terra::as.factor(tex[[1]])
+rat<- data.frame(terra::levels(texture.map))
 rat[["Texture"]]<- tex[[2]]$Class[match(rat$ID,tex$legend$Code)]
+rat<- rat[,c(1,3)]
 levels(texture.map)<- rat
-myTheme<- rasterTheme(region=(colorRampPalette(brewer.pal(12, "Set3"))(13)))
-levelplot(texture.map, par.settings=myTheme)
+coltb<- data.frame(value=rat$ID, col=colorRampPalette(RColorBrewer::brewer.pal(12, "Set3"))(nrow(rat)))
+terra::coltab(texture.map)<- coltb
+terra::plot(texture.map)
 
 # Create a texture class raster with sand fractions
+
+# generate random values for sand, silt and clay, normalize to sum 100, assign to SpatRaster
+sand<- sample(seq(0,100,1),10000,replace=TRUE)
+silt<- sample(seq(0,100,1),10000,replace=TRUE)
+clay<- sample(seq(0,100,1),10000,replace=TRUE)
+
+vals<- data.frame(sand=(sand/(sand+silt+clay))*100,
+                  silt=(silt/(sand+silt+clay))*100,
+                  clay=(clay/(sand+silt+clay))*100)
+
+sand<- terra::rast(ncol=100, nrow=100, vals=vals$sand, xmin=0, xmax=100, ymin=0, ymax=100)
+silt<- terra::rast(ncol=100, nrow=100, vals=vals$silt, xmin=0, xmax=100, ymin=0, ymax=100)
+clay<- terra::rast(ncol=100, nrow=100, vals=vals$clay, xmin=0, xmax=100, ymin=0, ymax=100)
+
+# generate random values for sand fractions, normalize to sum 100, assing to SpatRaster
+vfs<- sample(seq(0,100,1),10000,replace=TRUE)
+fs<- sample(seq(0,100,1),10000,replace=TRUE)
+ms<- sample(seq(0,100,1),10000,replace=TRUE)
+cs<- sample(seq(0,100,1),10000,replace=TRUE)
+vcs<- sample(seq(0,100,1),10000,replace=TRUE)
+
+vals<- data.frame(vfs=(vfs/(vfs+fs+ms+cs+vcs))*100,
+                  fs=(fs/(vfs+fs+ms+cs+vcs))*100,
+                  ms=(ms/(vfs+fs+ms+cs+vcs))*100,
+                  cs=(cs/(vfs+fs+ms+cs+vcs))*100,
+                  vcs=(vcs/(vfs+fs+ms+cs+vcs))*100)
+
+vfs<- terra::rast(ncol=100, nrow=100, vals=vals$vfs, xmin=0, xmax=100, ymin=0, ymax=100)
+fs<- terra::rast(ncol=100, nrow=100, vals=vals$fs, xmin=0, xmax=100, ymin=0, ymax=100)
+ms<- terra::rast(ncol=100, nrow=100, vals=vals$ms, xmin=0, xmax=100, ymin=0, ymax=100)
+cs<- terra::rast(ncol=100, nrow=100, vals=vals$cs, xmin=0, xmax=100, ymin=0, ymax=100)
+vcs<- terra::rast(ncol=100, nrow=100, vals=vals$vcs, xmin=0, xmax=100, ymin=0, ymax=100)
+
+# Create a texture class raster without sand fractions
 tex_fractions<- oss.texture.r(sand,silt,clay, vcs, cs, ms, fs, vfs)
+
+# And we can visualize
+texture.map<- terra::as.factor(tex_fractions[[1]])
+rat<- data.frame(terra::levels(texture.map))
+rat[["Texture"]]<- tex_fractions[[2]]$Class[match(rat$ID,tex_fractions$legend$Code)]
+rat<- rat[,c(1,3)]
+levels(texture.map)<- rat
+coltb<- data.frame(value=rat$ID, col=colorRampPalette(RColorBrewer::brewer.pal(12, "Set3"))(nrow(rat)))
+terra::coltab(texture.map)<- coltb
+terra::plot(texture.map)
 
 }

@@ -6,9 +6,9 @@
 #'
 #' @docType data
 #'
-#' @usage require(raster); data(keene)
+#' @usage require(terra); data(keene)
 #'
-#' @format An object of class `"raster"`.
+#' @format An object of class `"DataFrame"`.
 #'
 #' @keywords datasets
 #'
@@ -18,8 +18,10 @@
 #' @source Ontario GeoHub, <https://geohub.lio.gov.on.ca/datasets/b1ec60624b2f4f67bb9c4fb536e6b2fd>
 #'
 #' @examples
-#' library(raster)
+#' library(terra)
 #' data(keene)
-#' plot(Keene_DEM)
-#' pr <- crs(Keene_DEM)
+#' keene<- terra::rast(keene, type="xyz")
+#' terra::crs(keene)<- "epsg:26917"
+#' plot(Keene)
+#' pr <- crs(Keene)
 

@@ -26,13 +26,15 @@ Perform sequential Variable Inflation Factor analysis for a dataframe of predict
 }
 \examples{
 #Perform sequential VIF on an environmental raster stack
-library(raster)
+library(terra)
 library(fmsb)
 
-#Generate autocorrelated raster layers from the Keene study area
+#Generate autocorrelated raster layers from the Keene study area DEM
 data(keene)
+keene<- rast(keene)
+
 #Original DEM values
-orig_pts <- raster::sampleRandom(x=keene, size=1000, na.rm=TRUE, sp=FALSE)
+orig_pts <- terra::spatSample(x= keene, size=1000, na.rm=TRUE, method="random", as.df=FALSE)
 
 #Create values correlated with original DEM values
 ras1 <- orig_pts + rnorm(orig_pts, mean=0, sd=5)

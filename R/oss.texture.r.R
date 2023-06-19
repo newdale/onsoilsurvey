@@ -25,14 +25,12 @@
 #' Each outer list item will represent the list of outputs for each layer of the SpatRaster.
 #' The inner list will contain the 'texture_raster' and 'legend' objects as described above.
 #'
-#'@importFrom RColorBrewer "brewer.pal"
+#' @importFrom RColorBrewer "brewer.pal"
+#' @importFrom terra "rast"
 #'
 #' @export
 #'
 #' @examples
-#' require(sp)
-#' require(terra)
-#' require(RColorBrewer)
 #'
 #' # create sample data which includes all combinations of sand, silt and clay
 #' dat<- data.frame(expand.grid(sand=seq(0,100,1), silt=seq(0,100,1), clay=seq(0,100,1)))
@@ -40,78 +38,71 @@
 #' dat<- dat[dat$sum==100,]
 #' dat$x<- dat$sand
 #' dat$y<- dat$clay
+#' dat<- dat[,c(5,6,1,2,3)]
 #'
-#' coordinates(dat)<- ~x+y
-#' gridded(dat)<- TRUE
-#' sand<- terra::rast(dat[1])
-#' silt<- terra::rast(dat[2])
-#' clay<- terra::rast(dat[3])
-#'
-#' # Create sand fraction data for testing
-#' vcs<- clay/(clay+silt+sand+clay+clay)*100
-#' cs<- silt/(clay+silt+sand+clay+clay)*100
-#' ms<- sand/(clay+silt+sand+clay+clay)*100
-#' fs<- clay/(clay+silt+sand+clay+clay)*100
-#' vfs<- clay/(clay+silt+sand+clay+clay)*100
+#' sand<- terra::rast(dat[,c(1:3)], type="xyz")
+#' silt<- terra::rast(dat[,c(1,2,4)], type="xyz")
+#' clay<- terra::rast(dat[,c(1,2,5)], type="xyz")
 #'
 #' # Create a texture class raster without sand fractions
 #' tex<- oss.texture.r(sand,silt,clay)
 #'
 #' # And we can visualize
-#' texture.map<- as.factor(tex[[1]])
-#' rat<- data.frame(levels(texture.map))
+#' texture.map<- terra::as.factor(tex[[1]])
+#' rat<- data.frame(terra::levels(texture.map))
 #' rat[["Texture"]]<- tex[[2]]$Class[match(rat$ID,tex$legend$Code)]
 #' rat<- rat[,c(1,3)]
 #' levels(texture.map)<- rat
-#' coltb<- data.frame(value=rat$ID, col=colorRampPalette(brewer.pal(12, "Set3"))(nrow(rat)))
-#' coltab(texture.map)<- coltb
-#' plot(texture.map)
+#' coltb<- data.frame(value=rat$ID, col=colorRampPalette(RColorBrewer::brewer.pal(12, "Set3"))(nrow(rat)))
+#' terra::coltab(texture.map)<- coltb
+#' terra::plot(texture.map)
 #'
 #' # Create a texture class raster with sand fractions
-#' # Create a texture class raster with sand fractions
-
+#'
 #' # generate random values for sand, silt and clay, normalize to sum 100, assign to SpatRaster
 #' sand<- sample(seq(0,100,1),10000,replace=TRUE)
 #' silt<- sample(seq(0,100,1),10000,replace=TRUE)
 #' clay<- sample(seq(0,100,1),10000,replace=TRUE)
-
+#'
 #' vals<- data.frame(sand=(sand/(sand+silt+clay))*100,
 #'                   silt=(silt/(sand+silt+clay))*100,
 #'                   clay=(clay/(sand+silt+clay))*100)
 #'
-#' sand<- rast(ncol=100, nrow=100, vals=vals$sand, xmin=0, xmax=100, ymin=0, ymax=100)
-#' silt<- rast(ncol=100, nrow=100, vals=vals$silt, xmin=0, xmax=100, ymin=0, ymax=100)
-#' clay<- rast(ncol=100, nrow=100, vals=vals$clay, xmin=0, xmax=100, ymin=0, ymax=100)
-
+#' sand<- terra::rast(ncol=100, nrow=100, vals=vals$sand, xmin=0, xmax=100, ymin=0, ymax=100)
+#' silt<- terra::rast(ncol=100, nrow=100, vals=vals$silt, xmin=0, xmax=100, ymin=0, ymax=100)
+#' clay<- terra::rast(ncol=100, nrow=100, vals=vals$clay, xmin=0, xmax=100, ymin=0, ymax=100)
+#'
 #' # generate random values for sand fractions, normalize to sum 100, assing to SpatRaster
 #' vfs<- sample(seq(0,100,1),10000,replace=TRUE)
 #' fs<- sample(seq(0,100,1),10000,replace=TRUE)
 #' ms<- sample(seq(0,100,1),10000,replace=TRUE)
 #' cs<- sample(seq(0,100,1),10000,replace=TRUE)
 #' vcs<- sample(seq(0,100,1),10000,replace=TRUE)
-
+#'
 #' vals<- data.frame(vfs=(vfs/(vfs+fs+ms+cs+vcs))*100,
 #'                   fs=(fs/(vfs+fs+ms+cs+vcs))*100,
 #'                   ms=(ms/(vfs+fs+ms+cs+vcs))*100,
 #'                   cs=(cs/(vfs+fs+ms+cs+vcs))*100,
 #'                   vcs=(vcs/(vfs+fs+ms+cs+vcs))*100)
-
-#' vfs<- rast(ncol=100, nrow=100, vals=vals$vfs, xmin=0, xmax=100, ymin=0, ymax=100)
-#' fs<- rast(ncol=100, nrow=100, vals=vals$fs, xmin=0, xmax=100, ymin=0, ymax=100)
-#' ms<- rast(ncol=100, nrow=100, vals=vals$ms, xmin=0, xmax=100, ymin=0, ymax=100)
-#' cs<- rast(ncol=100, nrow=100, vals=vals$cs, xmin=0, xmax=100, ymin=0, ymax=100)
-#' vcs<- rast(ncol=100, nrow=100, vals=vals$vcs, xmin=0, xmax=100, ymin=0, ymax=100)
-
+#'
+#' vfs<- terra::rast(ncol=100, nrow=100, vals=vals$vfs, xmin=0, xmax=100, ymin=0, ymax=100)
+#' fs<- terra::rast(ncol=100, nrow=100, vals=vals$fs, xmin=0, xmax=100, ymin=0, ymax=100)
+#' ms<- terra::rast(ncol=100, nrow=100, vals=vals$ms, xmin=0, xmax=100, ymin=0, ymax=100)
+#' cs<- terra::rast(ncol=100, nrow=100, vals=vals$cs, xmin=0, xmax=100, ymin=0, ymax=100)
+#' vcs<- terra::rast(ncol=100, nrow=100, vals=vals$vcs, xmin=0, xmax=100, ymin=0, ymax=100)
+#'
+#' # Create a texture class raster without sand fractions
 #' tex_fractions<- oss.texture.r(sand,silt,clay, vcs, cs, ms, fs, vfs)
-#' texture.map<- as.factor(tex_fractions[[1]])
-#' rat<- data.frame(levels(texture.map))
+#'
+#' # And we can visualize
+#' texture.map<- terra::as.factor(tex_fractions[[1]])
+#' rat<- data.frame(terra::levels(texture.map))
 #' rat[["Texture"]]<- tex_fractions[[2]]$Class[match(rat$ID,tex_fractions$legend$Code)]
 #' rat<- rat[,c(1,3)]
 #' levels(texture.map)<- rat
-#' coltb<- data.frame(value=rat$ID, col=colorRampPalette(brewer.pal(12, "Set3"))(nrow(rat)))
-#' coltab(texture.map)<- coltb
-#' plot(texture.map)
-#'
+#' coltb<- data.frame(value=rat$ID, col=colorRampPalette(RColorBrewer::brewer.pal(12, "Set3"))(nrow(rat)))
+#' terra::coltab(texture.map)<- coltb
+#' terra::plot(texture.map)
 #'
 oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vfs=NULL, tri="CSSC"){
 
@@ -127,7 +118,7 @@ oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, 
                           Code=c(seq(1,22,1)))
 
   #determine the class of the objects
-  if(class(sand)[1]=="SpatRaster" & class(silt)[1]=="SpatRaster" & class(clay)[1]=="SpatRaster"){
+  if(terra::nlyr(sand)==1){
 
     #convert the raster layers to vector
     s<- as.vector(round(sand,0))
@@ -163,18 +154,18 @@ oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, 
     rat<- data.frame(Code=z.legend, Class=z.legendclass)
     rm(z.legend,z.legendclass)
 
-    xyz<- data.frame(cbind(xy,z))
-    tex<- rast(xyz)
+    xyz<- cbind(xy,z)
+    tex<- terra::rast(xyz,type="xyz")
 
     texout <- list("texture_raster"=tex, "legend"=rat)
 
     # if the objects provided to the function are RasterStacks or Bricks, we need to create a for-loop to iterate
-  }else if(class(sand)[1]=="SpatRaster" & class(silt)[1]=="SpatRaster" & class(clay)[1]=="SpatRaster"){
+  }else if(terra::nlyr(sand)>1){
 
     #create an empty list outside the loop to store the outputs
     texout<- list()
 
-    for (i in 1:nlyr(sand)){
+    for (i in 1:terra::nlyr(sand)){
 
       #convert the raster layers to vector
       s<- as.vector(round(sand[[i]],0))
@@ -208,8 +199,8 @@ oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, 
       rat<- data.frame(Code=z.legend, Class=z.legendclass)
       rm(z.legend,z.legendclass)
 
-      xyz<- data.frame(cbind(xy,z))
-      tex<- rast(xyz)
+      xyz<- cbind(xy,z)
+      tex<- rast(xyz, type="xyz")
 
       temp <- list("texture_raster"=tex, "legend"=rat)
       texout[[i]]<- temp
@@ -217,7 +208,7 @@ oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, 
 
     return(texout)
 
-    # last option is that the objects provided were not RasterLayer or SpatRaster
-  }else{print("Input data must be SpatRaster, please check your input objects")
+    # last option is that the objects provided were not RasterLayer or RasterStack or Bricks
+  }else{print("Input data must be RasterLayer or RasteStack or RasterBrick, please check your input objects")
   }
 }

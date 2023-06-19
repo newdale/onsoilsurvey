@@ -7,20 +7,22 @@
 oss.edf(x)
 }
 \arguments{
-\item{x}{Raster* object}
+\item{x}{SpatRaster, SpatialPixelsDataFrame or RasterLayer* object}
 }
 \value{
-RasterStack* object
+SpatRaster* object
 }
 \description{
 Calculate Euclidean distance fields for an input raster.
 Calculate distance from each raster cell to NW, NE, SW,
-SE, Y max, X max and middle of the raster. Outputs to a rasterstack.
+SE, Y max, X max and middle of the raster. Outputs to a SpatRaster.
 }
 \examples{
 #Calculate Euclidean distance fields from a DEM raster
-library(raster)
+library(terra)
 data(keene)
+keene<- terra::rast(keene, type="xyz")
+terra::crs(keene)<- "epsg:26917"
 oss.edf(keene)
 
 
