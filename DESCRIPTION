@@ -11,8 +11,12 @@ Authors@R:
            family = "Blackford",
            role = c("ctb"),
            email = "chris.blackford@ontario.ca"))
-Description: This package is simply a collection of functions commonly used in PDSM. I can no longer justify copy and paste of
-    functions from one script to another.
+Maintainer: Daniel Saurette <daniel.saurette@ontario.ca>
+Description: This package is a collection of functions used for digital soil mapping in Ontario. 
+ It includes functions for creating spatial covariates, for generating fit statistics for trained models, 
+ for generating  additional fit statistics (concordance, bias) directly from caret model outputs, 
+ for running a sequential variance inflation factor analysis for covaraite reduction, for assigning 
+ soil texture classes based on particle size data, and for computing divergence metrics to assist in sample design.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -21,3 +25,5 @@ Suggests:
     testthat (>= 2.1.0)
 Imports: terra, stats, dplyr, methods, ithir, RColorBrewer, fmsb
 Depends: R (>= 3.5)
+URL: https://github.com/newdale/onsoilsurvey
+BugReports: https://github.com/newdale/onsoilsurvey/issues
