@@ -49,7 +49,6 @@
 #' # then repeating until threshold is hit
 #'
 #' vif_results <- oss.seqVIF(df, thresh=5, trace=FALSE, show.R2.vals=TRUE)
-#'
 
 oss.seqVIF <- function(cov_df, thresh, trace=FALSE, show.R2.vals=FALSE){
 
@@ -65,12 +64,12 @@ oss.seqVIF <- function(cov_df, thresh, trace=FALSE, show.R2.vals=FALSE){
   }
   max_vif <- max(as.numeric(vif_init[,2]), na.rm = TRUE)
 
-  ###If no values are above threshold, stop
+  ###If no values are above threshold, use all covariates
   if(max_vif < thresh){
-    print(vif_init)
-    message(paste("Error: All variables have VIF <", thresh, ", max VIF = ", round(max_vif,2),
-    ". Returning table with VIF scores. Choose lower threshold to perform removal or keep all variables"))
-    return(vif_init)
+    message(paste("All variables have VIF <", thresh, ", max VIF = ", round(max_vif,2),
+                  ". Returning table with VIF scores. Choose lower threshold to perform removal or keep all variables"))
+    return(list(Covariates_retained=colnames(cov_df),
+                VIF_all=vif_init))
     }
 
   ###If at least one value is above threshold, run sequential VIF
