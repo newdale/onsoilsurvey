@@ -24,6 +24,7 @@ RoxygenNote: 7.2.3
 Suggests: 
     testthat (>= 2.1.0)
 Imports: terra, stats, dplyr, methods, ithir, RColorBrewer, fmsb
+Remotes: bitbucket::brendo1001/ithir/pkg
 Depends: R (>= 3.5)
 URL: https://github.com/newdale/onsoilsurvey
 BugReports: https://github.com/newdale/onsoilsurvey/issues
