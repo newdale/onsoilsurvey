@@ -135,26 +135,26 @@ oss.texture<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vf
 
     # here we do the sands
     } else if(sand > 85 & silt + 1.5 * clay < 15){
-      if(vcs + cs >=25 & ms<50 & fs<50 & vfs<50){tclass<- 'coarse sand'
-      } else if (vcs + cs + ms >=25 & vcs + cs <25 & fs<50 & vfs<50 | vcs + cs >=25 & ms>=50){tclass<- 'sand'
+      if(vcs+cs >=25 & ms<50 & fs<50 & vfs<50){tclass<- 'coarse sand'
+      } else if (vcs+cs+ms >=25 & vcs+cs <25 & fs<50 & vfs<50 | vcs+cs >=25 & ms>=50){tclass<- 'sand'
       } else if (fs>=50 | vcs+cs+ms<25 & vfs<50){tclass<- 'fine sand'
       } else if (vfs>=50){ tclass<- 'very fine sand'
       } else {tclass<- 'sands error'}
 
       # here we do the loamy sands
     }else if(sand >=70 & sand <= 90 & silt + 1.5 * clay >= 15 & silt + 2 * clay < 30) {
-      if(vcs + cs >=25 & ms<50 & fs<50 & vfs<50){tclass<- 'loamy coarse sand'
-      } else if (vcs + cs + ms >=25 & vcs + cs <25 & fs<50 & vfs<50 | vcs + cs >=25 & ms>=50){tclass<- 'loamy sand'
-      } else if (fs>=50 | vfs<50 & vcs + cs + ms <25){tclass<- 'loamy fine sand'
+      if(vcs+cs >=25 & ms<50 & fs<50 & vfs<50){tclass<- 'loamy coarse sand'
+      } else if (vcs+cs+ms >=25 & vcs+cs <25 & fs<50 & vfs<50 | vcs+cs >=25 & ms>=50){tclass<- 'loamy sand'
+      } else if (fs>=50 | vfs<50 & vcs+cs+ms <25){tclass<- 'loamy fine sand'
       } else if (vfs>=50){tclass<- 'loamy very fine sand'
       } else {tclass<- "loamy sands error"}
 
       # here we do the sandy loams
     }else if((clay >= 7 & clay < 20 & sand > 52 & silt + 2 * clay >= 30) | (clay < 7 & silt < 50 & silt + 2 * clay >= 30)) {
-      if(vcs + cs >= 25 & ms<50 & fs<50 & vfs<50 | vcs + cs + ms >= 30 & vfs <=30 & vfs <50){tclass<- 'coarse sandy loam'
-      } else if (vcs + cs + ms >=30 & vcs + cs <30 & fs<30 & vfs<30 | vcs + cs + ms <=15 & fs<30 & vfs<30 & fs + vfs <=40 | vcs + cs >=25 & ms >=50){tclass<- 'sandy loam'
-      } else if (fs>=30 & vfs<30 & vcs + cs <25 | vcs+cs+ms>=15 & vcs+cs+ms<30 & vcs+cs<25 | vfs+fs>=40 & fs>=vfs & vcs+cs+ms<=15 | vcs+cs >=25 & fs>=50){tclass<- 'fine sandy loam'
-      } else if (vfs>=30 & vcs+cs+ms<15 & vfs>fs | vfs + fs >=40 & vfs>fs & vcs + cs + ms <15 | vfs>=50 & vcs+cs>=25 | vcs+cs+ms>=30 & vfs>=50){tclass<- 'very fine sandy loam'
+      if(vcs+cs >= 25 & ms<50 & fs<50 & vfs<50 | vcs+cs+ms >= 30 & vfs >=30 & vfs <50){tclass<- 'coarse sandy loam'
+      } else if (vcs+cs+ms >=30 & vcs+cs <30 & fs<30 & vfs<30 | vcs+cs+ms <=15 & fs<30 & vfs<30 & fs + vfs <=40 | vcs+cs >=25 & ms >=50){tclass<- 'sandy loam'
+      } else if (fs>=30 & vfs<30 & vcs+cs <25 | vcs+cs+ms>=15 & vcs+cs+ms<30 & vcs+cs<25 | vfs+fs>=40 & fs>=vfs & vcs+cs+ms<=15 | vcs+cs >=25 & fs>=50){tclass<- 'fine sandy loam'
+      } else if (vfs>=30 & vcs+cs+ms<15 & vfs>fs | vfs+fs >=40 & vfs>fs & vcs+cs+ms <15 | vfs>=50 & vcs+cs>=25 | vcs+cs+ms>=30 & vfs>=50){tclass<- 'very fine sandy loam'
       } else {tclass<- 'sandy loams error'}
 
       # and now the sand fractions no longer matter
