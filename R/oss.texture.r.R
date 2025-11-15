@@ -57,53 +57,6 @@
 #' terra::coltab(texture.map)<- coltb
 #' terra::plot(texture.map)
 #'
-#' # Create a texture class raster with sand fractions
-#'
-#' # generate random values for sand, silt and clay, normalize to sum 100, assign to SpatRaster
-#' sand<- sample(seq(0,100,1),10000,replace=TRUE)
-#' silt<- sample(seq(0,100,1),10000,replace=TRUE)
-#' clay<- sample(seq(0,100,1),10000,replace=TRUE)
-#'
-#' vals<- data.frame(sand=(sand/(sand+silt+clay))*100,
-#'                   silt=(silt/(sand+silt+clay))*100,
-#'                   clay=(clay/(sand+silt+clay))*100)
-#'
-#' sand<- terra::rast(ncol=100, nrow=100, vals=vals$sand, xmin=0, xmax=100, ymin=0, ymax=100)
-#' silt<- terra::rast(ncol=100, nrow=100, vals=vals$silt, xmin=0, xmax=100, ymin=0, ymax=100)
-#' clay<- terra::rast(ncol=100, nrow=100, vals=vals$clay, xmin=0, xmax=100, ymin=0, ymax=100)
-#'
-#' # generate random values for sand fractions, normalize to sum 100, assing to SpatRaster
-#' vfs<- sample(seq(0,100,1),10000,replace=TRUE)
-#' fs<- sample(seq(0,100,1),10000,replace=TRUE)
-#' ms<- sample(seq(0,100,1),10000,replace=TRUE)
-#' cs<- sample(seq(0,100,1),10000,replace=TRUE)
-#' vcs<- sample(seq(0,100,1),10000,replace=TRUE)
-#'
-#' vals<- data.frame(vfs=(vfs/(vfs+fs+ms+cs+vcs))*100,
-#'                   fs=(fs/(vfs+fs+ms+cs+vcs))*100,
-#'                   ms=(ms/(vfs+fs+ms+cs+vcs))*100,
-#'                   cs=(cs/(vfs+fs+ms+cs+vcs))*100,
-#'                   vcs=(vcs/(vfs+fs+ms+cs+vcs))*100)
-#'
-#' vfs<- terra::rast(ncol=100, nrow=100, vals=vals$vfs, xmin=0, xmax=100, ymin=0, ymax=100)
-#' fs<- terra::rast(ncol=100, nrow=100, vals=vals$fs, xmin=0, xmax=100, ymin=0, ymax=100)
-#' ms<- terra::rast(ncol=100, nrow=100, vals=vals$ms, xmin=0, xmax=100, ymin=0, ymax=100)
-#' cs<- terra::rast(ncol=100, nrow=100, vals=vals$cs, xmin=0, xmax=100, ymin=0, ymax=100)
-#' vcs<- terra::rast(ncol=100, nrow=100, vals=vals$vcs, xmin=0, xmax=100, ymin=0, ymax=100)
-#'
-#' # Create a texture class raster without sand fractions
-#' tex_fractions<- oss.texture.r(sand,silt,clay, vcs, cs, ms, fs, vfs)
-#'
-#' # And we can visualize
-#' texture.map<- terra::as.factor(tex_fractions[[1]])
-#' rat<- data.frame(terra::levels(texture.map))
-#' rat[["Texture"]]<- tex_fractions[[2]]$Class[match(rat$ID,tex_fractions$legend$Code)]
-#' rat<- rat[,c(1,3)]
-#' levels(texture.map)<- rat
-#' coltb<- data.frame(value=rat$ID, col=colorRampPalette(RColorBrewer::brewer.pal(12, "Set3"))(nrow(rat)))
-#' terra::coltab(texture.map)<- coltb
-#' terra::plot(texture.map)
-#'
 oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vfs=NULL, tri="CSSC"){
 
   #set the triangle

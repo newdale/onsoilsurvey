@@ -59,5 +59,4 @@ df <- cbind(df, random_rasters)
 # then repeating until threshold is hit
 
 vif_results <- oss.seqVIF(df, thresh=5, trace=FALSE, show.R2.vals=TRUE)
-
 }

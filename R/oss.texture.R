@@ -22,11 +22,11 @@
 #' oss.texture(sand=67, silt=23, clay=10)
 #'
 #' #Determine texture class for a single observation with sand fractions
-#' oss.texture(sand=67, silt=23, clay=10, vcs=60, cs=10, ms=10, fs=10, vfs=10)
+#' oss.texture(sand=67, silt=23, clay=10, vcs=40, cs=15, ms=15, fs=15, vfs=15)
 #'
 #' #Determine texture class for multiple observations without sand fractions
 #' dat<- data.frame(sand=c(20,40,80), silt= c(15,30,10), clay= c(65,30,10),
-#' vcs=c(10,10,10), cs=c(5,5,5), ms=c(5,5,5), fs=c(60,60,60), vfs=c(20,20,20))
+#' vcs=c(2,4,8), cs=c(1,2,4), ms=c(1,2,4), fs=c(12,24,48), vfs=c(4,8,16))
 #' mapply(oss.texture,sand=dat$sand, silt=dat$silt, clay=dat$clay,
 #' vcs=dat$vcs, cs=dat$cs, ms=dat$ms, fs=dat$fs, vfs=dat$vfs)
 #'
@@ -82,50 +82,34 @@ oss.texture<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vf
 
       # we need to create a warning if things are not adding up
       sfrac<- vcs+cs+ms+fs+vfs
-      sfrac<- mean(sfrac, na.rm=TRUE)
 
-      # we check to see if sand fractions sum closer to sand content
+      # we check to see if sand fractions add up to total sand
       # and we check to see if the sum deviates by more than 2 from total sand and issue warning if it does
-      if(which.min(abs(c(sand,100)-sfrac))==1){
-        if(sfrac>=(sand+5) | sfrac<= (sand-5)) warning('Sum of sand fractions deviates by more than 5 from total sand. Check your input data. Values will be normalized to sum 100')
-      }
+      if(sfrac>=(sand+5) | sfrac<= (sand-5)) warning('Sum of sand fractions deviates by more than 5 from total sand. Check your input data. Values will be normalized to sum 100')
 
-      # we check to see if sand fractions sum closer to 100% (reported as percent of total sand)
-      # and if closer to 100, we check to see if the sum deviates by more than 2 from 100
-      if(which.min(abs(c(sand,100)-sfrac))==2){
-        if(sfrac>=(105) | sfrac<= (95)) warning('Sum of sand fractions deviates by more than 5 from 100. Check your input data. Values will be normalized to sum 100')
-      }
-
-      # and now we will normalize sand fractions in the case they are a proportion of total sand
+      # and now we will normalize sand fractions to proportion of total sand
       # create copies for the calculation
       vcs.t<- vcs; cs.t<- cs; ms.t<- ms; fs.t<- fs; vfs.t<- vfs
-      if(which.min(c(sand,100)-sfrac)==1){
-        vcs<- vcs.t/(vcs.t+cs.t+ms.t+fs.t+vfs.t)*100
-        cs<- cs.t/(vcs.t+cs.t+ms.t+fs.t+vfs.t)*100
-        ms<- ms.t/(vcs.t+cs.t+ms.t+fs.t+vfs.t)*100
-        fs<- fs.t/(vcs.t+cs.t+ms.t+fs.t+vfs.t)*100
-        vfs<- vfs.t/(vcs.t+cs.t+ms.t+fs.t+vfs.t)*100
-      }
+
+      #normlize to total sand in case there were errors
+      vcs<- vcs.t/(vcs.t+cs.t+ms.t+fs.t+vfs.t)*sand
+      cs<- cs.t/(vcs.t+cs.t+ms.t+fs.t+vfs.t)*sand
+      ms<- ms.t/(vcs.t+cs.t+ms.t+fs.t+vfs.t)*sand
+      fs<- fs.t/(vcs.t+cs.t+ms.t+fs.t+vfs.t)*sand
+      vfs<- vfs.t/(vcs.t+cs.t+ms.t+fs.t+vfs.t)*sand
+
+      #remove temporary objects
       rm(vcs.t, cs.t, ms.t, fs.t, vfs.t)
 
-      # and now we will normalize sand fractions
-      # if they were just converted in last step, they will already be in percent, but it doesn't hurt
-      if(which.min(c(sand,100)-sfrac)==2){
-        vcs<- vcs*100
-        cs<- cs*100
-        ms<- ms*100
-        fs<- fs*100
-        vfs<- vfs*100
-      }
     }else{
 
       # if no sand fraction data is provided, we assign these dummy values which lands in the texture class
       # where no sand fraction qualifier is used
-      vcs<-10
-      cs<- 10
-      ms<- 30
-      fs<- 25
-      vfs<-25
+      vcs<-0.10*sand
+      cs<- 0.10*sand
+      ms<- 0.30*sand
+      fs<- 0.25*sand
+      vfs<-0.25*sand
     }
     # end of the section where we manipulate the sand fractions if present
 

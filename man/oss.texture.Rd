@@ -52,11 +52,11 @@ will be assigned to the sands, loamy sands and sandy loams.
 oss.texture(sand=67, silt=23, clay=10)
 
 #Determine texture class for a single observation with sand fractions
-oss.texture(sand=67, silt=23, clay=10, vcs=60, cs=10, ms=10, fs=10, vfs=10)
+oss.texture(sand=67, silt=23, clay=10, vcs=40, cs=15, ms=15, fs=15, vfs=15)
 
 #Determine texture class for multiple observations without sand fractions
 dat<- data.frame(sand=c(20,40,80), silt= c(15,30,10), clay= c(65,30,10),
-vcs=c(10,10,10), cs=c(5,5,5), ms=c(5,5,5), fs=c(60,60,60), vfs=c(20,20,20))
+vcs=c(2,4,8), cs=c(1,2,4), ms=c(1,2,4), fs=c(12,24,48), vfs=c(4,8,16))
 mapply(oss.texture,sand=dat$sand, silt=dat$silt, clay=dat$clay,
 vcs=dat$vcs, cs=dat$cs, ms=dat$ms, fs=dat$fs, vfs=dat$vfs)
 
