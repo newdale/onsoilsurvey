@@ -1,12 +1,12 @@
 Package: onsoilsurvey
-Title: Making PDSM in Ontario Better
-Version: 0.0.0.9000
+Title: Tools for Digital Soil Mapping in Ontario
+Version: 1.0
 Authors@R: 
     c(person(given = "Daniel",
            family = "Saurette",
            role = c("aut", "cre"),
            email = "daniel.saurette@ontario.ca",
-           comment = c(ORCID = "YOUR-ORCID-ID")),
+           comment = c(ORCID = "0000-0002-1971-1238")),
  person(given = "Chris",
            family = "Blackford",
            role = c("ctb"),
