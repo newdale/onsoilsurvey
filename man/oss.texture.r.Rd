@@ -79,7 +79,8 @@ rat<- data.frame(terra::levels(texture.map))
 rat[["Texture"]]<- tex[[2]]$Class[match(rat$ID,tex$legend$Code)]
 rat<- rat[,c(1,3)]
 levels(texture.map)<- rat
-coltb<- data.frame(value=rat$ID, col=colorRampPalette(RColorBrewer::brewer.pal(12, "Set3"))(nrow(rat)))
+coltb<- data.frame(value=rat$ID,
+                   col=colorRampPalette(RColorBrewer::brewer.pal(12, "Set3"))(nrow(rat)))
 terra::coltab(texture.map)<- coltb
 terra::plot(texture.map)
 

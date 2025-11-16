@@ -119,18 +119,11 @@ oss.particle_size<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NU
       vcs.t<- vcs; cs.t<- cs; ms.t<- ms; fs.t<- fs; vfs.t<- vfs
 
       # we start by normalizing to total sand so the numbers add up to correct rounding errors
-      if(vcs==0){vcs.p<-0}else{vcs.p<- vcs.t*sand/(vcs.t+cs.t+ms.t+fs.t+vfs.t)}
-      if(cs==0){cs.p<-0}else{cs.p<- cs.t*sand/(vcs.t+cs.t+ms.t+fs.t+vfs.t)}
-      if(ms==0){ms.p<-0}else{ms.p<- ms.t*sand/(vcs.t+cs.t+ms.t+fs.t+vfs.t)}
-      if(fs==0){fs.p<-0}else{fs.p<- fs.t*sand/(vcs.t+cs.t+ms.t+fs.t+vfs.t)}
-      if(vfs==0){vfs.p<-0}else{vfs.p<- vfs.t*sand/(vcs.t+cs.t+ms.t+fs.t+vfs.t)}
-
-      # and then we use the above to compute these as percentage
-      if(vcs.p==0){vcs=0}else{vcs<- (vcs.p/sand)*100}
-      if(cs.p==0){cs=0}else{cs<- (cs.p/sand)*100}
-      if(ms.p==0){ms=0}else{ms<- (ms.p/sand)*100}
-      if(fs.p==0){fs=0}else{fs<- (fs.p/sand)*100}
-      if(vfs.p==0){vfs=0}else{vfs<- (vfs.p/sand)*100}
+      if(vcs==0){vcs<-0}else{vcs<- vcs.t*sand/(vcs.t+cs.t+ms.t+fs.t+vfs.t)}
+      if(cs==0){cs<-0}else{cs<- cs.t*sand/(vcs.t+cs.t+ms.t+fs.t+vfs.t)}
+      if(ms==0){ms<-0}else{ms<- ms.t*sand/(vcs.t+cs.t+ms.t+fs.t+vfs.t)}
+      if(fs==0){fs<-0}else{fs<- fs.t*sand/(vcs.t+cs.t+ms.t+fs.t+vfs.t)}
+      if(vfs==0){vfs<-0}else{vfs<- vfs.t*sand/(vcs.t+cs.t+ms.t+fs.t+vfs.t)}
 
       rm(vcs.t, cs.t, ms.t, fs.t, vfs.t)
 
@@ -183,10 +176,10 @@ oss.particle_size<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NU
 
       # here we assign the loamy classes
       } else if(tclass=="loamy very fine sand" | tclass=="very fine sand" | clay<35) {
-        if(fs.p+ms.p+cs.p+vcs.p>=15 & clay<18) {ps.class<- 'coarse loamy'
-        } else if (fs.p+ms.p+cs.p+vcs.p>=15 & clay>=18 & clay<35) {ps.class<- 'fine loamy'
-        } else if (fs.p+ms.p+cs.p+vcs.p<15 & clay<18) {ps.class<- 'coarse silty'
-        } else if (fs.p+ms.p+cs.p+vcs.p<15 & clay>=18 & clay<35) {ps.class<- 'fine silty'
+        if(fs+ms+cs+vcs>=15 & clay<18) {ps.class<- 'coarse loamy'
+        } else if (fs+ms+cs+vcs>=15 & clay>=18 & clay<35) {ps.class<- 'fine loamy'
+        } else if (fs+ms+cs+vcs<15 & clay<18) {ps.class<- 'coarse silty'
+        } else if (fs+ms+cs+vcs<15 & clay>=18 & clay<35) {ps.class<- 'fine silty'
         } else {ps.class<- 'loamy error'}
 
         # here we assign the clayey classes
