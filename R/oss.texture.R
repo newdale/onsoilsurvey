@@ -53,7 +53,7 @@ oss.texture<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vf
   psa<- sand + silt + clay
 
   # if psa=NA, we want the function to skip to the end and return NA, so we wrap the entire thing in an if statement
-  if(!is.na(psa)){
+  if(!is.na(clay) & !is.na(silt) & !is.na(sand)){
 
     # if the sum is closest to 1, meaning user has decimals, convert to percentages
     if(which.min(abs(c(1,100)-psa))==1){
