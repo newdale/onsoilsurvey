@@ -10,7 +10,11 @@ Authors@R:
  person(given = "Chris",
            family = "Blackford",
            role = c("ctb"),
-           email = "chris.blackford@ontario.ca"))
+           email = "chris.blackford@ontario.ca"),
+ person(given = "Mojtaba",
+           family = "Naeimi",
+           role = c("ctb"),
+           email = "tirdad.naeimi@ontario.ca"))
 Maintainer: Daniel Saurette <daniel.saurette@ontario.ca>
 Description: This package is a collection of functions used for digital soil mapping in Ontario. 
  It includes functions for creating spatial covariates, for generating fit statistics for trained models, 
