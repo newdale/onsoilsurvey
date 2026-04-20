@@ -97,9 +97,9 @@ oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, 
 
     # here we use mapply to convert to texture class. We use either with or without fractions, based on inputs
     if(is.null(s1)){
-      z<- mapply(onsoilsurvey::oss.texture,sand=s, silt=si, clay=c, tri=tri)
+      z<- onsoilsurvey::oss.texture(sand=s, silt=si, clay=c, tri=tri)
     }else{
-      z<- mapply(onsoilsurvey::oss.texture,sand=s, silt=si, clay=c, vcs=s1, cs=s2, ms=s3, fs=s4, vfs=s5, tri=tri)}
+      z<- onsoilsurvey::oss.texture(sand=s, silt=si, clay=c, vcs=s1, cs=s2, ms=s3, fs=s4, vfs=s5, tri=tri)}
 
     z<- tex.legend$Code[match(z,tex.legend$TextureClass)]
     z.legend<- unique(z)
@@ -140,11 +140,11 @@ oss.texture.r<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, 
       xy<- terra::subst(xy,NA,0)
       xy<- terra::crds(xy)
 
-      # here we use mapply to convert to texture class. We use either with or without fractions, based on inputs
+      # We use either with or without fractions, based on inputs
       if(is.null(s1)){
-        z<- mapply(onsoilsurvey::oss.texture,sand=s, silt=si, clay=c, tri=tri)
+        z<- onsoilsurvey::oss.texture(sand=s, silt=si, clay=c, tri=tri)
       }else{
-        z<- mapply(onsoilsurvey::oss.texture,sand=s, silt=si, clay=c, vcs=s1, cs=s2, ms=s3, fs=s4, vfs=s5, tri=tri)}
+        z<- onsoilsurvey::oss.texture(sand=s, silt=si, clay=c, vcs=s1, cs=s2, ms=s3, fs=s4, vfs=s5, tri=tri)}
 
       z<- tex.legend$Code[match(z,tex.legend$TextureClass)]
       z.legend<- unique(z)
