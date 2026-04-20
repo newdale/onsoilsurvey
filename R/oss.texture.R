@@ -22,7 +22,7 @@
 #' oss.texture(sand=67, silt=23, clay=10)
 #'
 #' #Determine texture class for a single observation with sand fractions
-#' oss.texture(sand=67, silt=23, clay=10, vcs=40, cs=15, ms=15, fs=15, vfs=15)
+#' oss.texture(sand=67, silt=23, clay=10, vcs=27, cs=10, ms=10, fs=10, vfs=10)
 #'
 #' #Determine texture class for multiple observations without sand fractions
 #' dat<- data.frame(sand=c(20,40,80), silt= c(15,30,10), clay= c(65,30,10),
@@ -37,126 +37,93 @@
 #' #or return it as a new column in the data frame
 #' dat$class<- mapply(oss.texture,sand=dat$sand, silt=dat$silt, clay=dat$clay)
 #'
-oss.texture<- function(sand, silt, clay, vcs=NULL, cs=NULL, ms=NULL, fs=NULL, vfs=NULL, tri="CSSC"){
+oss.texture<- function(sand, silt, clay, vcs=NA, cs=NA, ms=NA, fs=NA, vfs=NA, tri="CSSC"){
 
-  clay<- clay
-  silt<- silt
-  sand<- sand
-  vcs<- vcs
-  cs<- cs
-  ms<- ms
-  fs<- fs
-  vfs<- vfs
-  tri<- tri
+  # 0. Force all arguments into vectors of the same length
+  n <- length(sand)
+  vcs <- if(length(vcs) == 1) rep(vcs, n) else vcs
+  cs  <- if(length(cs)  == 1) rep(cs, n)  else cs
+  ms  <- if(length(ms)  == 1) rep(ms, n)  else ms
+  fs  <- if(length(fs)  == 1) rep(fs, n)  else fs
+  vfs <- if(length(vfs) == 1) rep(vfs, n) else vfs
+  tri <- if(length(tri) == 1) rep(tri, n) else tri
 
-  # start by looking at the sums of the sand, silt and clay
-  psa<- sand + silt + clay
+  # 1. Handle decimal vs percentage (0.1 vs 10)
+  psa_raw <- sand + silt + clay
+  is_decimal <- abs(1 - psa_raw) < abs(100 - psa_raw)
 
-  # if psa=NA, we want the function to skip to the end and return NA, so we wrap the entire thing in an if statement
-  if(!is.na(clay) & !is.na(silt) & !is.na(sand)){
+  sand <- dplyr::if_else(is_decimal, sand * 100, sand)
+  silt <- dplyr::if_else(is_decimal, silt * 100, silt)
+  clay <- dplyr::if_else(is_decimal, clay * 100, clay)
 
-    # if the sum is closest to 1, meaning user has decimals, convert to percentages
-    if(which.min(abs(c(1,100)-psa))==1){
-      clay<- clay*100
-      silt<- silt*100
-      sand<- sand*100
-    }
+  # 2. Normalize totals to 100
+  total <- sand + silt + clay
+  sand <- (sand / total) * 100
+  silt <- (silt / total) * 100
+  clay <- (clay / total) * 100
 
-    # next we will ensure we normalize to 100, and print an error statement if values deviate too greatly
-    if (psa>=105 | psa<= 95) warning('Sum of sand, silt and clay deviates from 100 by more than 5. Check your input data. Values will be normalized to sum 100')
+  # 3. Handle Sand Fractions (vcs, cs, etc.)
+  # If any fraction is NA, use the dummy distribution from your original logic
+  has_fractions <- !is.na(vcs) & !is.na(cs) & !is.na(ms) & !is.na(fs) & !is.na(vfs)
 
-    # and now we will normalize to 100 for the sand, silt and clay
-    # create copies for the calculation
-    clay.t<- clay; silt.t<- silt; sand.t<- sand
+  vcs_f <- dplyr::if_else(has_fractions, vcs, 0.10 * sand)
+  cs_f  <- dplyr::if_else(has_fractions, cs,  0.10 * sand)
+  ms_f  <- dplyr::if_else(has_fractions, ms,  0.30 * sand)
+  fs_f  <- dplyr::if_else(has_fractions, fs,  0.25 * sand)
+  vfs_f <- dplyr::if_else(has_fractions, vfs, 0.25 * sand)
 
-    # and now we normalize to 100
-    clay<- clay.t/(clay.t+silt.t+sand.t)*100
-    silt<- silt.t/(clay.t+silt.t+sand.t)*100
-    sand<- sand.t/(clay.t+silt.t+sand.t)*100
-    rm(clay.t, silt.t, sand.t)
+  # Normalize fractions to the actual sand total
+  f_total <- vcs_f + cs_f + ms_f + fs_f + vfs_f
+  vcs <- (vcs_f / f_total) * sand
+  cs  <- (cs_f / f_total) * sand
+  ms  <- (ms_f / f_total) * sand
+  fs  <- (fs_f / f_total) * sand
+  vfs <- (vfs_f / f_total) * sand
 
+  # 4. Main Classification logic
+  dplyr::case_when(
+    is.na(sand) | is.na(silt) | is.na(clay) ~ NA_character_,
 
-    # next we look at the sums of the sand fractions, but only if we need to
+    # SANDS
+    sand > 85 & silt + 1.5 * clay < 15 ~ dplyr::case_when(
+      vcs + cs >= 25 & ms < 50 & fs < 50 & vfs < 50 ~ "coarse sand",
+      (vcs + cs + ms >= 25 & vcs + cs < 25 & fs < 50 & vfs < 50) | (vcs + cs >= 25 & ms >= 50) ~ "sand",
+      fs >= 50 | (vcs + cs + ms < 25 & vfs < 50) ~ "fine sand",
+      vfs >= 50 ~ "very fine sand",
+      TRUE ~ "sands error"
+    ),
 
-    if(!is.null(vcs)|!is.null(cs)|!is.null(ms)|!is.null(fs)|!is.null(vfs)){
+    # LOAMY SANDS
+    sand >= 70 & sand <= 90 & silt + 1.5 * clay >= 15 & silt + 2 * clay < 30 ~ dplyr::case_when(
+      vcs + cs >= 25 & ms < 50 & fs < 50 & vfs < 50 ~ "loamy coarse sand",
+      (vcs + cs + ms >= 25 & vcs + cs < 25 & fs < 50 & vfs < 50) | (vcs + cs >= 25 & ms >= 50) ~ "loamy sand",
+      fs >= 50 | (vfs < 50 & vcs + cs + ms < 25) ~ "loamy fine sand",
+      vfs >= 50 ~ "loamy very fine sand",
+      TRUE ~ "loamy sands error"
+    ),
 
-      # we need to create a warning if things are not adding up
-      sfrac<- vcs+cs+ms+fs+vfs
+    # SANDY LOAMS
+    (clay >= 7 & clay < 20 & sand > 52 & silt + 2 * clay >= 30) | (clay < 7 & silt < 50 & silt + 2 * clay >= 30) ~ dplyr::case_when(
+      (vcs + cs >= 25 & ms < 50 & fs < 50 & vfs < 50) | (vcs + cs + ms >= 30 & vfs >= 30 & vfs < 50) ~ "coarse sandy loam",
+      (vcs + cs + ms >= 30 & vcs + cs < 30 & fs < 30 & vfs < 30) | (vcs + cs + ms <= 15 & fs < 30 & vfs < 30 & fs + vfs <= 40) | (vcs + cs >= 25 & ms >= 50) ~ "sandy loam",
+      (fs >= 30 & vfs < 30 & vcs + cs < 25) | (vcs + cs + ms >= 15 & vcs + cs + ms < 30 & vcs + cs < 25) | (vfs + fs >= 40 & fs >= vfs & vcs + cs + ms <= 15) | (vcs + cs >= 25 & fs >= 50) ~ "fine sandy loam",
+      (vfs >= 30 & vcs + cs + ms < 15 & vfs > fs) | (vfs + fs >= 40 & vfs > fs & vcs + cs + ms < 15) | (vfs >= 50 & vcs + cs >= 25) | (vcs + cs + ms >= 30 & vfs >= 50) ~ "very fine sandy loam",
+      TRUE ~ "sandy loams error"
+    ),
 
-      # we check to see if sand fractions add up to total sand
-      # and we check to see if the sum deviates by more than 2 from total sand and issue warning if it does
-      if(sfrac>=(sand+5) | sfrac<= (sand-5)) warning('Sum of sand fractions deviates by more than 5 from total sand. Check your input data. Values will be normalized to sum 100')
+    # BASIC CLASSES
+    clay >= 7 & clay < 27 & silt >= 28 & silt < 50 & sand <= 52 ~ "loam",
+    (silt >= 50 & clay >= 12 & clay < 27) | (silt >= 50 & silt < 80 & clay < 12) ~ "silt loam",
+    silt >= 80 & clay < 12 ~ "silt",
+    clay >= 20 & clay < 35 & silt < 28 & sand > 45 ~ "sandy clay loam",
+    clay >= 27 & clay < 40 & sand <= 45 & sand > 20 ~ "clay loam",
+    clay >= 27 & clay < 40 & sand <= 20 ~ "silty clay loam",
+    clay >= 35 & clay <= 60 & sand > 45 ~ "sandy clay",
+    clay >= 40 & clay <= 60 & silt >= 40 ~ "silty clay",
+    clay >= 40 & clay <= 60 & silt < 40 & sand <= 45 ~ "clay",
+    clay > 60 & tri == "USDA" ~ "clay",
+    clay > 60 & tri == "CSSC" ~ "heavy clay",
+    TRUE ~ "texture class error"
+  )
 
-      # and now we will normalize sand fractions to proportion of total sand
-      # create copies for the calculation
-      vcs.t<- vcs; cs.t<- cs; ms.t<- ms; fs.t<- fs; vfs.t<- vfs
-
-      #normlize to total sand in case there were errors
-      vcs<- vcs.t/(vcs.t+cs.t+ms.t+fs.t+vfs.t)*sand
-      cs<- cs.t/(vcs.t+cs.t+ms.t+fs.t+vfs.t)*sand
-      ms<- ms.t/(vcs.t+cs.t+ms.t+fs.t+vfs.t)*sand
-      fs<- fs.t/(vcs.t+cs.t+ms.t+fs.t+vfs.t)*sand
-      vfs<- vfs.t/(vcs.t+cs.t+ms.t+fs.t+vfs.t)*sand
-
-      #remove temporary objects
-      rm(vcs.t, cs.t, ms.t, fs.t, vfs.t)
-
-    }else{
-
-      # if no sand fraction data is provided, we assign these dummy values which lands in the texture class
-      # where no sand fraction qualifier is used
-      vcs<-0.10*sand
-      cs<- 0.10*sand
-      ms<- 0.30*sand
-      fs<- 0.25*sand
-      vfs<-0.25*sand
-    }
-    # end of the section where we manipulate the sand fractions if present
-
-    #############################################################################################################
-    # and here is the start of the main section where texture class is determined
-    if(is.na(clay) | is.na(silt) | is.na(sand)){tclass <- NA
-
-    # here we do the sands
-    } else if(sand > 85 & silt + 1.5 * clay < 15){
-      if(vcs+cs >=25 & ms<50 & fs<50 & vfs<50){tclass<- 'coarse sand'
-      } else if (vcs+cs+ms >=25 & vcs+cs <25 & fs<50 & vfs<50 | vcs+cs >=25 & ms>=50){tclass<- 'sand'
-      } else if (fs>=50 | vcs+cs+ms<25 & vfs<50){tclass<- 'fine sand'
-      } else if (vfs>=50){ tclass<- 'very fine sand'
-      } else {tclass<- 'sands error'}
-
-      # here we do the loamy sands
-    }else if(sand >=70 & sand <= 90 & silt + 1.5 * clay >= 15 & silt + 2 * clay < 30) {
-      if(vcs+cs >=25 & ms<50 & fs<50 & vfs<50){tclass<- 'loamy coarse sand'
-      } else if (vcs+cs+ms >=25 & vcs+cs <25 & fs<50 & vfs<50 | vcs+cs >=25 & ms>=50){tclass<- 'loamy sand'
-      } else if (fs>=50 | vfs<50 & vcs+cs+ms <25){tclass<- 'loamy fine sand'
-      } else if (vfs>=50){tclass<- 'loamy very fine sand'
-      } else {tclass<- "loamy sands error"}
-
-      # here we do the sandy loams
-    }else if((clay >= 7 & clay < 20 & sand > 52 & silt + 2 * clay >= 30) | (clay < 7 & silt < 50 & silt + 2 * clay >= 30)) {
-      if(vcs+cs >= 25 & ms<50 & fs<50 & vfs<50 | vcs+cs+ms >= 30 & vfs >=30 & vfs <50){tclass<- 'coarse sandy loam'
-      } else if (vcs+cs+ms >=30 & vcs+cs <30 & fs<30 & vfs<30 | vcs+cs+ms <=15 & fs<30 & vfs<30 & fs + vfs <=40 | vcs+cs >=25 & ms >=50){tclass<- 'sandy loam'
-      } else if (fs>=30 & vfs<30 & vcs+cs <25 | vcs+cs+ms>=15 & vcs+cs+ms<30 & vcs+cs<25 | vfs+fs>=40 & fs>=vfs & vcs+cs+ms<=15 | vcs+cs >=25 & fs>=50){tclass<- 'fine sandy loam'
-      } else if (vfs>=30 & vcs+cs+ms<15 & vfs>fs | vfs+fs >=40 & vfs>fs & vcs+cs+ms <15 | vfs>=50 & vcs+cs>=25 | vcs+cs+ms>=30 & vfs>=50){tclass<- 'very fine sandy loam'
-      } else {tclass<- 'sandy loams error'}
-
-      # and now the sand fractions no longer matter
-    } else if(clay >= 7 & clay < 27 & silt >= 28 & silt < 50 & sand <= 52) {tclass<- "loam"
-    } else if((silt >= 50 & clay >= 12 & clay < 27) | (silt >= 50 & silt < 80 & clay < 12)) {tclass<- 'silt loam'
-    } else if(silt >= 80 & clay < 12) {tclass<- 'silt'
-    } else if(clay >= 20 & clay < 35 & silt < 28 & sand > 45) {tclass<- 'sandy clay loam'
-    } else if(clay >= 27 & clay < 40 & sand <= 45 & sand > 20) {tclass<- 'clay loam'
-    } else if(clay >= 27 & clay < 40 & sand <= 20) {tclass<- 'silty clay loam'
-    } else if(clay >= 35 & clay <= 60 & sand > 45 ) {tclass<- 'sandy clay'
-    } else if(clay >= 40 & clay <= 60 & silt >= 40) {tclass<- 'silty clay'
-    } else if(clay >= 40 & clay <= 60 & silt < 40 & sand <= 45) {tclass<- 'clay'
-    } else if(clay >60 & tri=="USDA"){tclass <- 'clay'
-    } else if(clay >60 & tri=="CSSC"){tclass<- 'heavy clay'
-    } else {tclass<- 'texture class error'
-    }
-
-  }else{tclass<- NA}
-
-  tclass
 }
