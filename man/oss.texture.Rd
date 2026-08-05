@@ -16,7 +16,8 @@ oss.texture(
   ms = NA,
   fs = NA,
   vfs = NA,
-  tri = "CSSC"
+  tri = "CSSC",
+  output = "simplified"
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ oss.texture(
 \item{vfs}{numeric, very fine sand (0.05 - 0.10 mm) content expressed as percentage of the sum of the sand fractions or portion of total sand}
 
 \item{tri}{character, current choices are "CSSC" for Canadian System of Soil Classification (default), or "USDA" for United States Department of Agriculture}
+
+\item{output}{character, current choices are "simplified" which returns the texture class without sand fractions, "specific" which returns the texture class with sand fractions, and "both"}
 }
 \value{
 character
@@ -49,20 +52,20 @@ will be assigned to the sands, loamy sands and sandy loams.
 }
 \examples{
 #Determine texture class for a single observation without sand fractions
-oss.texture(sand=67, silt=23, clay=10)
+oss.texture(sand=67, silt=23, clay=10, output="simplified")
 
 #Determine texture class for a single observation with sand fractions
-oss.texture(sand=67, silt=23, clay=10, vcs=27, cs=10, ms=10, fs=10, vfs=10)
+oss.texture(sand=67, silt=23, clay=10, vcs=27, cs=10, ms=10, fs=10, vfs=10, output="specific")
 
-#Determine texture class for multiple observations without sand fractions
+#Determine texture class for multiple observations with sand fractions
 dat<- data.frame(sand=c(20,40,80), silt= c(15,30,10), clay= c(65,30,10),
 vcs=c(2,4,8), cs=c(1,2,4), ms=c(1,2,4), fs=c(12,24,48), vfs=c(4,8,16))
 mapply(oss.texture,sand=dat$sand, silt=dat$silt, clay=dat$clay,
-vcs=dat$vcs, cs=dat$cs, ms=dat$ms, fs=dat$fs, vfs=dat$vfs)
+vcs=dat$vcs, cs=dat$cs, ms=dat$ms, fs=dat$fs, vfs=dat$vfs, output="specific")
 
 #Determine texture class for multiple observations without sand fractions
 dat<- data.frame(sand=c(20,40,80), silt= c(15,30,10), clay= c(65,30,10))
-mapply(oss.texture,sand=dat$sand, silt=dat$silt, clay=dat$clay)
+mapply(oss.texture,sand=dat$sand, silt=dat$silt, clay=dat$clay, output="simplified")
 
 #or return it as a new column in the data frame
 dat$class<- mapply(oss.texture,sand=dat$sand, silt=dat$silt, clay=dat$clay)

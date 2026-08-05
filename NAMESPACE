@@ -14,13 +14,17 @@ export(oss.texture)
 export(oss.texture.r)
 importFrom(RColorBrewer,"brewer.pal")
 importFrom(dplyr,"%>%")
-importFrom(grDevices,"dev.copy")
-importFrom(grDevices,"dev.list")
-importFrom(grDevices,"dev.off")
-importFrom(grDevices,"png")
-importFrom(graphics,"lines")
-importFrom(graphics,"mtext")
-importFrom(graphics,"par")
-importFrom(graphics,"polygon")
+importFrom(grDevices,
+  "dev.copy",
+  "dev.list",
+  "dev.off",
+  "png"
+)
+importFrom(graphics,
+  "lines",
+  "mtext",
+  "par",
+  "polygon"
+)
 importFrom(methods,"is")
 importFrom(terra,"rast")
