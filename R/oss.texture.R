@@ -157,6 +157,6 @@ oss.texture<- function(sand, silt, clay, vcs=NA, cs=NA, ms=NA, fs=NA, vfs=NA, tr
   } else if (output == "specific") {
     return(parsed_output$specific_texture)
   } else {
-    return(parsed_output) # Returns the data frame containing both columns
+    return(as.data.frame(parsed_output)) # Returns the data frame containing both columns
   }
 }
